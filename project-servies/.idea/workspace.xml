@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="84a3b7af-a433-431c-86bd-197df5dabd6a" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../project-web/毕业设计选题系统/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../project-web/毕业设计选题系统/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../project-web/毕业设计选题系统/babel.config.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../project-web/毕业设计选题系统/package-lock.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../project-web/毕业设计选题系统/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../project-web/毕业设计选题系统/public/favicon.ico" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../project-web/毕业设计选题系统/public/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../project-web/毕业设计选题系统/src/App.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../project-web/毕业设计选题系统/src/assets/logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../project-web/毕业设计选题系统/src/components/accountManage.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../project-web/毕业设计选题系统/src/components/addStudent.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../project-web/毕业设计选题系统/src/components/addTeacher.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../project-web/毕业设计选题系统/src/components/addTopic.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../project-web/毕业设计选题系统/src/components/allTeacher.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../project-web/毕业设计选题系统/src/components/allTopic.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../project-web/毕业设计选题系统/src/components/applyManage.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../project-web/毕业设计选题系统/src/components/applyManageRecord.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../project-web/毕业设计选题系统/src/components/applyRecord.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../project-web/毕业设计选题系统/src/components/guideStudents.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../project-web/毕业设计选题系统/src/components/myTeacher.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../project-web/毕业设计选题系统/src/components/myTopic.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../project-web/毕业设计选题系统/src/components/studentTopicApply.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../project-web/毕业设计选题系统/src/components/teacherTopicApply.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../project-web/毕业设计选题系统/src/components/topicManage.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../project-web/毕业设计选题系统/src/components/userInfo.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../project-web/毕业设计选题系统/src/main.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../project-web/毕业设计选题系统/src/router/index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../project-web/毕业设计选题系统/src/views/login.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../project-web/毕业设计选题系统/src/views/main.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../project-web/毕业设计选题系统/vue.config.js" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="localRepository" value="F:\maven-3.6.3\repository" />
+        <option name="mavenHome" value="C:/Program Files/Java/apache-maven-3.6.3" />
+        <option name="userSettingsFile" value="C:\Program Files\Java\apache-maven-3.6.3\conf\settings.xml" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="1cXGbjmsINY8cTukGNcdjp58eaJ" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="settings.editor.selected.configurable" value="MavenSettings" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="84a3b7af-a433-431c-86bd-197df5dabd6a" name="Default Changelist" comment="" />
+      <created>1590667597394</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1590667597394</updated>
+      <workItem from="1590667599701" duration="384000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="842" y="381" width="919" height="632" key="#Notifications" timestamp="1590667918062">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="842" y="381" width="919" height="632" key="#Notifications/0.1080.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1590667918062" />
+    <state x="540" y="254" key="IDE.errors.dialog" timestamp="1590667706465">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="540" y="254" key="IDE.errors.dialog/0.1080.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1590667706465" />
+  </component>
+</project>
