@@ -29,7 +29,5 @@ build/
 
 ### VS Code ###
 .vscode/
-
-### properities ###
-src/main/resources/*.yml
 src/main/resources/*.properties
+src/main/resources/*.yml
