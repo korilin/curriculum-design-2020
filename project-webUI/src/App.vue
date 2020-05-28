@@ -7,7 +7,6 @@
 </template>
 
 <script>
-// import Student from './views/student'
 
 export default {
   name: "",
