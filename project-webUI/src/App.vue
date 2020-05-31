@@ -7,7 +7,6 @@
 </template>
 
 <script>
-
 export default {
   name: "",
   data() {
@@ -15,9 +14,15 @@ export default {
   },
   components: {},
   created() {
-    this.$router.replace({
-      path: "/main"
-    });
+    if (localStorage.getItem("access_token")) {
+      this.$router.replace({
+        path: "/main"
+      });
+    } else {
+      this.$router.replace({
+        path: "/login"
+      });
+    }
   }
 };
 </script>
@@ -26,7 +31,7 @@ export default {
 .loginT-enter-active {
   transition: opacity 0.5s;
 }
-.loginT-leave-active{
+.loginT-leave-active {
   transition: opacity 0.3s;
 }
 .loginT-enter,

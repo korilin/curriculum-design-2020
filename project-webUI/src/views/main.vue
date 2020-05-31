@@ -235,13 +235,13 @@ import TopicManage from "../components/topicManage";
 import ApplyManage from "../components/applyManage";
 import ApplyManageRecord from "../components/applyManageRecord";
 import GuideStudents from "../components/guideStudents";
-import TeacherTopicApply from "../components/teacherTopicApply"
-import StudentTopicApply from "../components/studentTopicApply"
-import AllTopic from "../components/allTopic"
-import MyTopic from "../components/myTopic"
-import ApplyRecord from "../components/applyRecord"
-import AllTeacher from "../components/allTeacher"
-import MyTeacher from "../components/myTeacher"
+import TeacherTopicApply from "../components/teacherTopicApply";
+import StudentTopicApply from "../components/studentTopicApply";
+import AllTopic from "../components/allTopic";
+import MyTopic from "../components/myTopic";
+import ApplyRecord from "../components/applyRecord";
+import AllTeacher from "../components/allTeacher";
+import MyTeacher from "../components/myTeacher";
 
 export default {
   name: "Main",
@@ -278,16 +278,30 @@ export default {
       if (name == "UserInfo") {
         this.showComponent = name;
       } else if (name == "logout") {
-        this.$Message.info("退出成功");
+        this.axios
+          .post("/logout",{
+            accessToken: localStorage.getItem("access_token")
+          })
+          .then(response => {
+            if (response.data.requestStatus == 300) {
+              localStorage.removeItem("access_token");
+              this.$Message.info("退出成功");
+            }
+          })
+          .catch(error => {
+            this.$Message.error(error)
+          });
+
         this.$router.replace({
           path: "/login"
         });
       }
     }
   },
-  created(){
-    this.userType="Student";
-    this.userName="ARUKI";
+  created() {
+    
+    this.userType = "Student";
+    this.userName = "ARUKI";
   }
 };
 </script>

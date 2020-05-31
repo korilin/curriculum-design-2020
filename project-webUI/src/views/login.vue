@@ -4,16 +4,16 @@
       <h1 class="login-title">毕业设计选题系统</h1>
     </Header>
     <Content class="login-content">
-      <Menu mode="horizontal" active-name="student" @on-select="getSelectValue">
-        <MenuItem name="student">
+      <Menu mode="horizontal" active-name="Student" @on-select="getSelectValue">
+        <MenuItem name="Student">
           <Icon type="ios-people" />学生
         </MenuItem>
 
-        <MenuItem name="teacher">
+        <MenuItem name="Teacher">
           <Icon type="md-people" />导师
         </MenuItem>
 
-        <MenuItem name="admin">
+        <MenuItem name="Admin">
           <Icon type="ios-person" />管理员
         </MenuItem>
       </Menu>
@@ -25,13 +25,13 @@
         :rules="loginRule"
         ref="loginForm"
       >
-        <FormItem label="学号" v-if="userType=='student'" prop="userid">
+        <FormItem label="学号" v-if="userType=='Student'" prop="userid">
           <Input v-model="formData.userid" placeholder="请输入学号" />
         </FormItem>
-        <FormItem label="工号" v-if="userType=='teacher'" prop="userid">
+        <FormItem label="工号" v-if="userType=='Teacher'" prop="userid">
           <Input v-model="formData.userid" placeholder="请输入工号" />
         </FormItem>
-        <FormItem label="管理员账号" v-if="userType=='admin'" prop="userid">
+        <FormItem label="管理员账号" v-if="userType=='Admin'" prop="userid">
           <Input v-model="formData.userid" placeholder="请输入管理员账号" />
         </FormItem>
         <FormItem label="密码" prop="password">
@@ -75,24 +75,51 @@ export default {
         userid: "",
         password: ""
       },
-      userType: "student",
+      userType: "Student",
       loginRule: {
         userid: [{ validator: useridRule, trigger: "blur" }],
         password: [{ validator: passwordRule, trigger: "blur" }]
       }
     };
   },
+  created() {
+    if (localStorage.getItem("access_token")) {
+      alert(localStorage.getItem("access_token"));
+      this.$router.replace({
+        path: "/main"
+      });
+    }
+  },
   methods: {
     getSelectValue: function(name) {
       this.userType = name;
+      this.formData.userid = "";
+      this.formData.password = "";
     },
     submit: function(name) {
       this.$refs[name].validate(valid => {
         if (valid) {
-          this.$Message.success("登陆成功");
-          this.$router.replace({
-            path: '/main'
-          })
+          this.axios
+            .post("/login", {
+              userType: this.userType,
+              userId: this.formData.userid,
+              password: this.formData.password
+            })
+            .then(response => {
+              if (response.data.requestStatus == 200) {
+                localStorage.setItem("access_token", response.data.accessToken);
+                this.$router.replace({
+                  path: "/main"
+                });
+              } else {
+                this.$Message.error("账号或密码错误");
+              }
+            })
+            .catch(error => {
+              this.$Message.error("发生错误:" + error);
+            });
+        } else {
+          this.$Message.error("请填写正确的用户名和密码");
         }
       });
     }
