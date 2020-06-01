@@ -4,16 +4,16 @@ import lombok.Data;
 
 @Data
 public class Response {
-    int requestStatus;
-    String ErrorMessage;
+    int status;
+    String errorMessage;
 
     public Response(int status){
-        this.requestStatus = status;
-        this.ErrorMessage = "";
+        this.status = status;
+        this.errorMessage = "";
     }
 
     public Response(int status, String message){
-        this.requestStatus = status;
-        this.ErrorMessage = message;
+        this.status = status;
+        this.errorMessage = message;
     }
 }

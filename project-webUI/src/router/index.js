@@ -16,9 +16,10 @@ const routes = [
         component: Login
     },
     {
-        path: '/main',
+        path: '/main/:userType/:userName',
         name: 'Main',
-        component: Main
+        component: Main,
+        props: true
     }
 ]
 

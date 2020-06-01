@@ -245,10 +245,12 @@ import MyTeacher from "../components/myTeacher";
 
 export default {
   name: "Main",
+  props: {
+    userType: String,
+    userName: String
+  },
   data() {
     return {
-      userType: "",
-      userName: "",
       showComponent: "UserInfo"
     };
   },
@@ -275,33 +277,24 @@ export default {
       this.showComponent = name;
     },
     accountCenter: function(name) {
-      if (name == "UserInfo") {
-        this.showComponent = name;
-      } else if (name == "logout") {
+      if (name == "UserInfo") this.showComponent = name;
+      else if (name == "logout") {
         this.axios
-          .post("/logout",{
-            accessToken: localStorage.getItem("access_token")
-          })
+          .get("/logout?access_token=" + localStorage.getItem("access_token"))
           .then(response => {
-            if (response.data.requestStatus == 300) {
+            if (response.data.status == 300) {
               localStorage.removeItem("access_token");
               this.$Message.info("退出成功");
+              this.$router.replace({
+                name: "Login"
+              });
             }
           })
           .catch(error => {
-            this.$Message.error(error)
+            this.$Message.error(error);
           });
-
-        this.$router.replace({
-          path: "/login"
-        });
       }
     }
-  },
-  created() {
-    
-    this.userType = "Student";
-    this.userName = "ARUKI";
   }
 };
 </script>

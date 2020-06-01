@@ -3,9 +3,13 @@ package com.arukione.curriculum_design.model.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@Data
 @TableName("student")
-public class Student {
+@EqualsAndHashCode(callSuper = true)
+public class Student extends User{
 
     @TableId("SID")
     String sid;

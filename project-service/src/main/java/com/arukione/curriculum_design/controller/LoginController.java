@@ -1,6 +1,7 @@
 package com.arukione.curriculum_design.controller;
 
 import com.arukione.curriculum_design.model.DTO.Request.LoginRequest;
+import com.arukione.curriculum_design.model.DTO.Response.BaseInfoResponse;
 import com.arukione.curriculum_design.model.DTO.Response.LoginResponse;
 import com.arukione.curriculum_design.model.DTO.Response.Response;
 import com.arukione.curriculum_design.service.LoginService;
@@ -26,30 +27,26 @@ public class LoginController {
         String userType = loginRequest.getUserType();
         String id = loginRequest.getUserId();
         String password = loginRequest.getPassword();
-        String accessToken;
-        int status = 200;
         switch (userType) {
             case "Student":
-                accessToken = loginService.studentLogin(id, password);
-                break;
+                return loginService.studentLogin(id, password);
             case "Teacher":
-                accessToken = loginService.teacherLogin(id, password);
-                break;
+                return loginService.teacherLogin(id, password);
             case "Admin":
-                accessToken = loginService.adminLogin(id, password);
-                break;
+                return loginService.adminLogin(id, password);
             default:
                 throw new Exception("SPA页面userType数据异常");
         }
-        if (accessToken == null)
-            status = 202;
-        return new LoginResponse(status, accessToken);
     }
 
-    @PostMapping("logout")
-    public Response logout(@RequestBody Map<String, String> tokenMap) throws Exception {
-        String accessToken = tokenMap.get("accessToken");
+    @GetMapping("logout")
+    public Response logout(@RequestParam("access_token") String accessToken) {
         loginService.removeAccessToken(accessToken);
         return new Response(300);
+    }
+
+    @GetMapping("baseInfo")
+    public BaseInfoResponse baseInfo(@RequestParam("access_token") String accessToken) {
+        return loginService.getBaseInfo(accessToken);
     }
 }

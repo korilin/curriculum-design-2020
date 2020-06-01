@@ -106,10 +106,15 @@ export default {
               password: this.formData.password
             })
             .then(response => {
-              if (response.data.requestStatus == 200) {
+              console.log(response.data)
+              if (response.data.status == 300) {
                 localStorage.setItem("access_token", response.data.accessToken);
                 this.$router.replace({
-                  path: "/main"
+                  name: "Main",
+                  params: {
+                    userType: response.data.userType,
+                    userName: response.data.name
+                  }
                 });
               } else {
                 this.$Message.error("账号或密码错误");

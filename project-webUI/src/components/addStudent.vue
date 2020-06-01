@@ -80,16 +80,35 @@ export default {
           }
         ]
       },
-      professions: ["软件工程", "计算机与信息科学"]
+      professions: []
     };
+  },
+  created(){
+    this.axios.get("/getProfessions")
+      .then(response => {
+
+      })
+      .catch(error=>{
+
+      })
+      
   },
   methods: {
     addStudent: function(name) {
       this.$refs[name].validate(valid => {
         if (valid) {
-          this.$Message.success("添加成功");
+          this.axios.post("/addStudent")
+            .then(response=>{
+              if(response.data.status==200)
+                this.$Message.success("添加成功")
+              else
+                this.$Message.error(response.data.errorMessage)
+            })
+            .catch(error=>{
+              this.$Message.error(error)
+            })
         } else {
-          this.$Message.error("检查？？");
+          this.$Message.error("请检查填写的信息");
         }
       });
     },
