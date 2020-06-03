@@ -106,8 +106,7 @@ export default {
               password: this.formData.password
             })
             .then(response => {
-              console.log(response.data)
-              if (response.data.status == 300) {
+              if (response.data.status == 201) {
                 localStorage.setItem("access_token", response.data.accessToken);
                 this.$router.replace({
                   name: "Main",
@@ -116,12 +115,12 @@ export default {
                     userName: response.data.name
                   }
                 });
-              } else {
+              } else if(response.data.status == 202){
                 this.$Message.error("账号或密码错误");
               }
             })
             .catch(error => {
-              this.$Message.error("发生错误:" + error);
+              this.$Message.error("发生错误:" + error.message);
             });
         } else {
           this.$Message.error("请填写正确的用户名和密码");

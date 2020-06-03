@@ -28,14 +28,14 @@ export default {
                 }
               });
             }
-          } else if (response.data.status == 302) {
+          } else if (response.data.status == 401) {
             this.$Message.error(response.data.errorMessage);
             localStorage.removeItem("access_token");
             this.$router.replace({ name: "Login" });
           }
         })
         .catch(error => {
-          this.$Message.error(error);
+          this.$Message.error(error.message);
         });
     } else {
       if (this.$route.path != "/login") {

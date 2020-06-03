@@ -282,7 +282,7 @@ export default {
         this.axios
           .get("/logout?access_token=" + localStorage.getItem("access_token"))
           .then(response => {
-            if (response.data.status == 300) {
+            if (response.data.status == 204) {
               localStorage.removeItem("access_token");
               this.$Message.info("退出成功");
               this.$router.replace({
@@ -291,7 +291,7 @@ export default {
             }
           })
           .catch(error => {
-            this.$Message.error(error);
+            this.$Message.error(error.message);
           });
       }
     }

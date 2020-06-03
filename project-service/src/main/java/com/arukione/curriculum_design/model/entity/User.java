@@ -10,5 +10,5 @@ public class User  implements Serializable {
     @TableField(exist = false)
     String userType;
     @TableField(exist = false)
-    String name = "";
+    String name;
 }

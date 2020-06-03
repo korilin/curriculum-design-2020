@@ -2,8 +2,7 @@ package com.arukione.curriculum_design;
 
 import com.arukione.curriculum_design.mapper.AdminMapper;
 import com.arukione.curriculum_design.model.entity.Admin;
-import com.arukione.curriculum_design.model.entity.User;
-import com.arukione.curriculum_design.service.LoginService;
+import com.arukione.curriculum_design.service.UserService;
 import com.arukione.curriculum_design.utils.Generator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
@@ -21,7 +18,7 @@ class CurriculumDesignApplicationTests {
 	@Autowired
 	AdminMapper adminMapper;
 	@Autowired
-	LoginService loginService;
+    UserService userService;
 	@Resource
 	RedisTemplate<String, Object> redisTemplate;
 
@@ -36,7 +33,7 @@ class CurriculumDesignApplicationTests {
 
 	@Test
 	void mpTest(){
-		System.out.println(loginService.adminLogin("admin","jiebin22"));
+		System.out.println(userService.adminLogin("admin","jiebin22"));
 	}
 
 	@Test

@@ -3,23 +3,24 @@ package com.arukione.curriculum_design.controller;
 import com.arukione.curriculum_design.model.DTO.Request.LoginRequest;
 import com.arukione.curriculum_design.model.DTO.Response.BaseInfoResponse;
 import com.arukione.curriculum_design.model.DTO.Response.LoginResponse;
+import com.arukione.curriculum_design.model.DTO.Response.ProfessionResponse;
 import com.arukione.curriculum_design.model.DTO.Response.Response;
-import com.arukione.curriculum_design.service.LoginService;
-import org.apache.ibatis.type.TypeException;
+import com.arukione.curriculum_design.model.entity.Profession;
+import com.arukione.curriculum_design.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import java.util.ArrayList;
 
 
 @RestController
-public class LoginController {
+public class UserController {
 
-    final LoginService loginService;
+    final UserService userService;
 
     @Autowired
-    LoginController(LoginService loginService) {
-        this.loginService = loginService;
+    UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @PostMapping("login")
@@ -29,11 +30,11 @@ public class LoginController {
         String password = loginRequest.getPassword();
         switch (userType) {
             case "Student":
-                return loginService.studentLogin(id, password);
+                return userService.studentLogin(id, password);
             case "Teacher":
-                return loginService.teacherLogin(id, password);
+                return userService.teacherLogin(id, password);
             case "Admin":
-                return loginService.adminLogin(id, password);
+                return userService.adminLogin(id, password);
             default:
                 throw new Exception("SPA页面userType数据异常");
         }
@@ -41,12 +42,19 @@ public class LoginController {
 
     @GetMapping("logout")
     public Response logout(@RequestParam("access_token") String accessToken) {
-        loginService.removeAccessToken(accessToken);
-        return new Response(300);
+        userService.removeAccessToken(accessToken);
+        return new Response(204);
+    }
+
+    @GetMapping("getProfessions")
+    public ProfessionResponse getProfessions(){
+        ArrayList<Profession> professions = userService.getProfessions();
+        return new ProfessionResponse(200,professions);
     }
 
     @GetMapping("baseInfo")
     public BaseInfoResponse baseInfo(@RequestParam("access_token") String accessToken) {
-        return loginService.getBaseInfo(accessToken);
+        return userService.getBaseInfo(accessToken);
     }
+
 }
