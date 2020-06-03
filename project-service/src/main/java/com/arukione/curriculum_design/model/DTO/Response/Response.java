@@ -5,15 +5,15 @@ import lombok.Data;
 @Data
 public class Response {
     int status;
-    String errorMessage;
+    String message;
 
     public Response(int status){
         this.status = status;
-        this.errorMessage = "";
+        this.message = "";
     }
 
     public Response(int status, String message){
         this.status = status;
-        this.errorMessage = message;
+        this.message = message;
     }
 }

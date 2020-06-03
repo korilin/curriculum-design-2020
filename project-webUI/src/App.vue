@@ -29,7 +29,6 @@ export default {
               });
             }
           } else if (response.data.status == 401) {
-            this.$Message.error(response.data.errorMessage);
             localStorage.removeItem("access_token");
             this.$router.replace({ name: "Login" });
           }

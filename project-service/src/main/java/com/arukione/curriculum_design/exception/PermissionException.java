@@ -1,4 +1,6 @@
-package com.arukione.curriculum_design.utils;
+package com.arukione.curriculum_design.exception;
+
+import com.arukione.curriculum_design.utils.Message;
 
 public class PermissionException extends Exception{
     public PermissionException(){

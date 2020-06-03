@@ -133,9 +133,18 @@ export default {
               accessToken: localStorage.getItem("access_token")
             })
             .then(response => {
-              if (response.data.status == 204)
+              var status = response.data.status;
+              if (status == 204)
                 this.$Message.success("添加成功");
-              else this.$Message.error(response.data.errorMessage);
+              else if(status == 401){
+                this.$Message.error(response.data.message)
+                localStorage.removeItem("access_token")
+                this.$router.replace({
+                  name: "Login"
+                })
+              }else {
+                this.$Message.error(response.data.message)
+              }
             })
             .catch(error => {
               this.$Message.error(error.message);

@@ -8,9 +8,11 @@ import com.arukione.curriculum_design.model.DTO.Response.BaseInfoResponse;
 import com.arukione.curriculum_design.model.DTO.Response.LoginResponse;
 import com.arukione.curriculum_design.model.entity.*;
 import com.arukione.curriculum_design.utils.Generator;
+import com.arukione.curriculum_design.utils.HTTPStatus;
 import com.arukione.curriculum_design.utils.Message;
-import com.arukione.curriculum_design.utils.PermissionException;
+import com.arukione.curriculum_design.exception.PermissionException;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -18,12 +20,10 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserService {
-
     @Resource
     private RedisTemplate<String, User> redisTemplate;
     final AdminMapper adminMapper;
@@ -49,9 +49,9 @@ public class UserService {
             accessToken = Generator.generateAccessToken();
             student.setUserType("Student");
             redisTemplate.opsForValue().set(accessToken, student, 1, TimeUnit.DAYS);
-            return new LoginResponse(201, accessToken, "Student", student.getName());
+            return new LoginResponse(HTTPStatus.Success, accessToken, "Student", student.getName());
         }
-        return new LoginResponse(202, null, Message.ID_OR_PASSWORD_ERROR);
+        return new LoginResponse(HTTPStatus.Failed, null, Message.ID_OR_PASSWORD_ERROR);
     }
 
     public LoginResponse teacherLogin(String id, String password) {
@@ -63,24 +63,23 @@ public class UserService {
             accessToken = Generator.generateAccessToken();
             teacher.setUserType("Teacher");
             redisTemplate.opsForValue().set(accessToken, teacher, 1, TimeUnit.DAYS);
-            return new LoginResponse(201, accessToken, "Teacher", teacher.getName());
+            return new LoginResponse(HTTPStatus.Success, accessToken, "Teacher", teacher.getName());
         }
-        return new LoginResponse(202, null, Message.ID_OR_PASSWORD_ERROR);
+        return new LoginResponse(HTTPStatus.Failed, null, Message.ID_OR_PASSWORD_ERROR);
     }
 
     public LoginResponse adminLogin(String id, String password) {
         QueryWrapper<Admin> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("AdminID", id).eq("Password", password);
         Admin admin = adminMapper.selectOne(queryWrapper);
-        String accessToken = null;
         if (admin != null) {
-            accessToken = Generator.generateAccessToken();
+            String accessToken = Generator.generateAccessToken();
             admin.setUserType("Admin");
             admin.setName(admin.getAdminId());
             redisTemplate.opsForValue().set(accessToken, admin, 1, TimeUnit.DAYS);
-            return new LoginResponse(201, accessToken, "Admin", admin.getName());
+            return new LoginResponse(HTTPStatus.Success, accessToken, "Admin", admin.getName());
         }
-        return new LoginResponse(202, null, Message.ID_OR_PASSWORD_ERROR);
+        return new LoginResponse( HTTPStatus.Failed, null, Message.ID_OR_PASSWORD_ERROR);
     }
 
     public void removeAccessToken(String accessToken) {
@@ -93,12 +92,13 @@ public class UserService {
     }
 
     public BaseInfoResponse getBaseInfo(String accessToken) {
+
         User user = redisTemplate.opsForValue().get(accessToken);
         if (user == null)
-            return new BaseInfoResponse(401, Message.STATUS_FAILURE_MESSAGE);
+            return new BaseInfoResponse(HTTPStatus.Unauthorized, Message.NO_LOGIN_STATUS);
         String userType = user.getUserType();
         String name = user.getName();
-        return new BaseInfoResponse(200, userType, name);
+        return new BaseInfoResponse(HTTPStatus.OK, userType, name);
     }
 
     public User permission(String accessToken, String userType) throws PermissionException {
@@ -107,6 +107,5 @@ public class UserService {
         if (!user.getUserType().equals(userType)) throw new PermissionException();
         return user;
     }
-
 
 }

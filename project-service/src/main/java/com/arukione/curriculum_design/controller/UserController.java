@@ -7,6 +7,7 @@ import com.arukione.curriculum_design.model.DTO.Response.ProfessionResponse;
 import com.arukione.curriculum_design.model.DTO.Response.Response;
 import com.arukione.curriculum_design.model.entity.Profession;
 import com.arukione.curriculum_design.service.UserService;
+import com.arukione.curriculum_design.utils.HTTPStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,20 +37,20 @@ public class UserController {
             case "Admin":
                 return userService.adminLogin(id, password);
             default:
-                throw new Exception("SPA页面userType数据异常");
+                throw new Exception("SPA User Type Error: 数据异常");
         }
     }
 
     @GetMapping("logout")
     public Response logout(@RequestParam("access_token") String accessToken) {
         userService.removeAccessToken(accessToken);
-        return new Response(204);
+        return new Response(HTTPStatus.Success);
     }
 
     @GetMapping("getProfessions")
     public ProfessionResponse getProfessions(){
         ArrayList<Profession> professions = userService.getProfessions();
-        return new ProfessionResponse(200,professions);
+        return new ProfessionResponse(HTTPStatus.OK,professions);
     }
 
     @GetMapping("baseInfo")
