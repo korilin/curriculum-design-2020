@@ -16,7 +16,7 @@ export default {
   created() {
     if (localStorage.getItem("access_token")) {
       this.axios
-        .get("/baseInfo?access_token=" + localStorage.getItem("access_token"))
+        .get("/baseInfo?accessToken=" + localStorage.getItem("access_token"))
         .then(response => {
           if (response.data.status == 200) {
             if (this.$route.name != "Main") {

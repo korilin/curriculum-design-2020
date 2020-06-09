@@ -280,7 +280,7 @@ export default {
       if (name == "UserInfo") this.showComponent = name;
       else if (name == "logout") {
         this.axios
-          .get("/logout?access_token=" + localStorage.getItem("access_token"))
+          .get("/logout?accessToken=" + localStorage.getItem("access_token"))
           .then(response => {
             if (response.data.status == 204) {
               localStorage.removeItem("access_token");

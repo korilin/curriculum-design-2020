@@ -18,7 +18,7 @@
           </FormItem>
           <FormItem label="指导专业" prop="GuideProfession">
             <Select @on-change="guideProfessionChange">
-              <Option v-for="profession in professions" :value="profession" :key="profession"></Option>
+              <Option v-for="(value,key) in professions" :value="key" :key="key">{{value.name}}</Option>
             </Select>
           </FormItem>
           <FormItem label="密码" prop="Password">
@@ -31,6 +31,7 @@
           </FormItem>
           <FormItem label="职称" prop="Rank">
              <Select @on-change="RankChange">
+               <Option value="无">无</Option>
               <Option value="教授">教授</Option>
               <Option value="副教授">副教授</Option>
               <Option value="讲师">讲师</Option>
@@ -95,21 +96,62 @@ export default {
           }
         ]
       },
-      professions: ["软件工程", "计算机与信息科学"]
+      professions: []
     };
+  },
+  created() {
+    this.axios
+      .get("/getProfessions")
+      .then(response => {
+        if (response.data.status == 200)
+          this.professions = response.data.professions;
+        else this.$Message.error("专业列表获取失败");
+      })
+      .catch(error => {
+        this.$Message.error(error.message);
+      });
   },
   methods: {
     addTeacher: function(name) {
       this.$refs[name].validate(valid => {
         if (valid) {
-          this.$Message.success("添加成功");
+          var info = this.teacherInfo
+          this.axios
+            .post("/addTeacher", {
+              tid: info.TID,
+              name: info.TName,
+              position: info.Position,
+              rank: info.Rank,
+              guideProfId: info.GuideProfession,
+              phone: info.Phone,
+              email: info.Email,
+              password: info.Password,
+              accessToken: localStorage.getItem("access_token")
+            })
+            .then(response => {
+              var status = response.data.status;
+              if (status == 204)
+                this.$Message.success("添加成功");
+              else if(status == 401){
+                this.$Message.error(response.data.message)
+                localStorage.removeItem("access_token")
+                this.$router.replace({
+                  name: "Login"
+                })
+              }else {
+                this.$Message.error(response.data.message)
+              }
+            })
+            .catch(error => {
+              this.$Message.error(error.message);
+            });
         } else {
-          this.$Message.error("检查？？");
+          this.$Message.error("请检查填写的信息");
         }
       });
     },
-    guideProfessionChange: function(value) {
-      this.teacherInfo.GuideProfession = value;
+    guideProfessionChange: function(key) {
+      this.teacherInfo.GuideProfession = key;
     },
     RankChange: function(value){
       this.teacherInfo.Rank = value;

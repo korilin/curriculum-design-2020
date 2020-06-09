@@ -11,16 +11,12 @@ import java.util.HashMap;
 @EqualsAndHashCode(callSuper = true)
 public class ProfessionResponse extends Response {
 
-    HashMap<String, String> professions = new HashMap<>();
-
-    ProfessionResponse(int status, String mes) {
-        super(status, mes);
-    }
+    HashMap<String, Profession> professions = new HashMap<>();
 
     public ProfessionResponse(int status, ArrayList<Profession> professions) {
         super(status);
         for (Profession profession : professions) {
-            this.professions.put(profession.getId(),profession.getName());
+            this.professions.put(profession.getId(),profession);
         }
     }
 }

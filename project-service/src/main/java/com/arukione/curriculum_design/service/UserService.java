@@ -6,6 +6,8 @@ import com.arukione.curriculum_design.mapper.StudentMapper;
 import com.arukione.curriculum_design.mapper.TeacherMapper;
 import com.arukione.curriculum_design.model.DTO.Response.BaseInfoResponse;
 import com.arukione.curriculum_design.model.DTO.Response.LoginResponse;
+import com.arukione.curriculum_design.model.DTO.Response.Response;
+import com.arukione.curriculum_design.model.DTO.Response.UserInfoResponse;
 import com.arukione.curriculum_design.model.entity.*;
 import com.arukione.curriculum_design.utils.Generator;
 import com.arukione.curriculum_design.utils.HTTPStatus;
@@ -18,6 +20,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.security.KeyException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -79,7 +82,7 @@ public class UserService {
             redisTemplate.opsForValue().set(accessToken, admin, 1, TimeUnit.DAYS);
             return new LoginResponse(HTTPStatus.Success, accessToken, "Admin", admin.getName());
         }
-        return new LoginResponse( HTTPStatus.Failed, null, Message.ID_OR_PASSWORD_ERROR);
+        return new LoginResponse(HTTPStatus.Failed, null, Message.ID_OR_PASSWORD_ERROR);
     }
 
     public void removeAccessToken(String accessToken) {
@@ -87,12 +90,11 @@ public class UserService {
     }
 
     public ArrayList<Profession> getProfessions() {
-        List<Profession> professions = professionMapper.selectList(null);
+        List<Profession> professions = professionMapper.getProfessionsIncludeDepartment();
         return (ArrayList<Profession>) professions;
     }
 
     public BaseInfoResponse getBaseInfo(String accessToken) {
-
         User user = redisTemplate.opsForValue().get(accessToken);
         if (user == null)
             return new BaseInfoResponse(HTTPStatus.Unauthorized, Message.NO_LOGIN_STATUS);
@@ -106,6 +108,78 @@ public class UserService {
         if (user == null) throw new NullPointerException();
         if (!user.getUserType().equals(userType)) throw new PermissionException();
         return user;
+    }
+
+    public List<Student> getStudents(String professionId) {
+        QueryWrapper<Student> queryWrapper = null;
+        if (professionId != null) {
+            queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("ProfID", professionId);
+        }
+        return studentMapper.selectList(queryWrapper);
+    }
+
+    public List<Teacher> getTeachers(String professionId) {
+        QueryWrapper<Teacher> queryWrapper = null;
+        if (professionId != null) {
+            queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("ProfID", professionId);
+        }
+        return teacherMapper.selectList(queryWrapper);
+    }
+
+    public UserInfoResponse getUserInfo(String accessToken) {
+        User user = redisTemplate.opsForValue().get(accessToken);
+        if (user == null) return new UserInfoResponse(HTTPStatus.Unauthorized, Message.NO_LOGIN_STATUS);
+        String userType = user.getUserType();
+        switch (userType) {
+            case "Student":
+                return new UserInfoResponse(HTTPStatus.OK, (Student) user);
+            case "Teacher":
+                return new UserInfoResponse(HTTPStatus.OK, (Teacher) user);
+            case "Admin":
+                return new UserInfoResponse(HTTPStatus.OK, (Admin) user);
+            default:
+                return new UserInfoResponse(HTTPStatus.Failed, "找不到用户类型");
+        }
+    }
+
+    public Response updateResult(int i){
+       return i==1? new Response(HTTPStatus.Success):new Response(HTTPStatus.Failed, "修改失败");
+    }
+
+    public Response changePassword(String accessToken, String password) {
+        User user = redisTemplate.opsForValue().get(accessToken);
+        if (user == null)
+            return new BaseInfoResponse(HTTPStatus.Unauthorized, Message.NO_LOGIN_STATUS);
+        String userType = user.getUserType();
+        try {
+            switch (userType) {
+                case "Student":
+                    Student student = (Student) user;
+                    Student studentN = new Student();
+                    studentN.setSid(student.getSid());
+                    student.setPassword(password);
+                    return updateResult(studentMapper.updateById(studentN));
+                case "Teacher":
+                    Teacher teacher = (Teacher) user;
+                    Teacher teacherN = new Teacher();
+                    teacherN.setTid(teacher.getTid());
+                    teacher.setPassword(password);
+                    return updateResult(teacherMapper.updateById(teacherN));
+                case "Admin":
+                    Admin admin = (Admin) user;
+                    Admin adminN = new Admin();
+                    adminN.setAdminId(admin.getAdminId());
+                    adminN.setPassword(password);
+                    return updateResult(adminMapper.updateById(adminN));
+                default: throw new Exception("Error");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return new Response(HTTPStatus.Failed, e.getMessage());
+        }
+
     }
 
 }

@@ -13,7 +13,7 @@
       <Row class="row">
         <Col span="5">{{info.TopicName}}</Col>
         <Col span="5">{{applyType[info.TopicSource]}}</Col>
-        <Col span="5">{{info.TName}}</Col>
+        <Col span="5">{{info.SName}}</Col>
         <Col span="5">{{info.ApplyTime}}</Col>
         <Col span="4" :class="'status' + info.Status">{{status[info.Status]}}</Col>
       </Row>

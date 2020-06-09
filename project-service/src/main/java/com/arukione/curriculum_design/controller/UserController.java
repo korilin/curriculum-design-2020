@@ -1,10 +1,7 @@
 package com.arukione.curriculum_design.controller;
 
 import com.arukione.curriculum_design.model.DTO.Request.LoginRequest;
-import com.arukione.curriculum_design.model.DTO.Response.BaseInfoResponse;
-import com.arukione.curriculum_design.model.DTO.Response.LoginResponse;
-import com.arukione.curriculum_design.model.DTO.Response.ProfessionResponse;
-import com.arukione.curriculum_design.model.DTO.Response.Response;
+import com.arukione.curriculum_design.model.DTO.Response.*;
 import com.arukione.curriculum_design.model.entity.Profession;
 import com.arukione.curriculum_design.service.UserService;
 import com.arukione.curriculum_design.utils.HTTPStatus;
@@ -42,20 +39,29 @@ public class UserController {
     }
 
     @GetMapping("logout")
-    public Response logout(@RequestParam("access_token") String accessToken) {
+    public Response logout(@RequestParam("accessToken") String accessToken) {
         userService.removeAccessToken(accessToken);
         return new Response(HTTPStatus.Success);
     }
 
     @GetMapping("getProfessions")
-    public ProfessionResponse getProfessions(){
+    public ProfessionResponse getProfessions() {
         ArrayList<Profession> professions = userService.getProfessions();
-        return new ProfessionResponse(HTTPStatus.OK,professions);
+        return new ProfessionResponse(HTTPStatus.OK, professions);
     }
 
     @GetMapping("baseInfo")
-    public BaseInfoResponse baseInfo(@RequestParam("access_token") String accessToken) {
+    public BaseInfoResponse baseInfo(@RequestParam("accessToken") String accessToken) {
         return userService.getBaseInfo(accessToken);
     }
 
+    @GetMapping("userInfo")
+    public UserInfoResponse userInfo(@RequestParam("accessToken") String accessToken) {
+        return userService.getUserInfo(accessToken);
+    }
+
+    @PostMapping("changePassword")
+    public Response changePassword(@RequestParam("accessToken") String accessToken, @RequestParam("password") String password) {
+        return userService.changePassword(accessToken, password);
+    }
 }

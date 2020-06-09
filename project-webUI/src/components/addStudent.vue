@@ -26,7 +26,7 @@
       </FormItem>
       <FormItem label="专业" prop="Profession">
         <Select @on-change="professionChange">
-          <Option v-for="(value,key) in professions" :value="key" :key="key">{{value}}</Option>
+          <Option v-for="(value,key) in professions" :value="key" :key="key">{{value.name}}</Option>
         </Select>
       </FormItem>
       <FormItem label="班号" prop="ClassNumber">
