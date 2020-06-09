@@ -64,4 +64,10 @@ public class UserController {
     public Response changePassword(@RequestParam("accessToken") String accessToken, @RequestParam("password") String password) {
         return userService.changePassword(accessToken, password);
     }
+
+    @GetMapping("getType")
+    public TypeResponse getType(){
+       return userService.getTopicType();
+    }
+
 }

@@ -59,4 +59,9 @@ class CurriculumDesignApplicationTests {
 		List<Profession> professions = professionMapper.getProfessionsIncludeDepartment();
 		System.out.println(professions);
 	}
+
+	@Test
+	void topicIDTest(){
+		System.out.println(Generator.generateTopicID());
+	}
 }

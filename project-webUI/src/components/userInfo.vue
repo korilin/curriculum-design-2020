@@ -11,6 +11,7 @@
           :rules="teacherRule"
           :label-width="100"
           label-position="left"
+          v-if="TeacherInfo&&professions[TeacherInfo.guideProfID]"
         >
           <FormItem label="姓名">
             <Input v-model="TeacherInfo.name" disabled></Input>
@@ -24,7 +25,7 @@
           <FormItem label="职称">
             <Input v-model="TeacherInfo.trank" disabled></Input>
           </FormItem>
-          <FormItem label="指导专业" v-if="TeacherInfo.guideProfID">
+          <FormItem label="指导专业">
             <Input v-model="professions[TeacherInfo.guideProfID].name" disabled></Input>
           </FormItem>
           <FormItem label="联系电话" prop="phone">

@@ -1,15 +1,13 @@
 package com.arukione.curriculum_design.controller;
 
+import com.arukione.curriculum_design.model.DTO.Request.TopicInfo;
 import com.arukione.curriculum_design.model.DTO.Response.Response;
 import com.arukione.curriculum_design.service.TeacherService;
+import com.arukione.curriculum_design.utils.HTTPStatus;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/teacher")
 public class TeacherController {
 
     final TeacherService teacherService;
@@ -19,7 +17,7 @@ public class TeacherController {
         this.teacherService = teacherService;
     }
 
-    @PostMapping("changeInfo")
+    @PostMapping("/teacher/changeInfo")
     public Response changeInfo(@RequestParam("accessToken")String accessToken,
                                @RequestParam("phone")String phone,
                                @RequestParam("email")String email,
@@ -27,4 +25,8 @@ public class TeacherController {
         return teacherService.changeInfo(accessToken, phone, email, topicDemand);
     }
 
+    @PostMapping("addTopic")
+    public Response addTopic(@RequestParam("accessToken")String accessToken, @RequestBody TopicInfo topicInfo){
+        return teacherService.addTopic(accessToken, topicInfo);
+    }
 }

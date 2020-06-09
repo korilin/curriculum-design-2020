@@ -66,14 +66,17 @@ export default {
       }
     };
   },
-  created(){
-    this.type = {
-      10001: "工程设计类",
-      10002: "理论研究类",
-      10003: "应用（实验）研究类",
-      10004: "软件设计类",
-      10005: "其它"
-    };
+  created() {
+    this.axios
+      .get("/getType")
+      .then(response => {
+        if (response.data.status == 200) this.type = response.data.type;
+        else this.$Message.error("课题类型获取失败");
+      })
+      .catch(error => {
+        this.$Message.error(error.message);
+        console.log(error);
+      });
   },
   methods: {
     TypeChange: function(value) {
@@ -82,7 +85,37 @@ export default {
     topicSubmit: function(name) {
       this.$refs[name].validate(valid => {
         if (valid) {
-          this.$Message.success("添加成功");
+          this.axios({
+            method: "post",
+            url: "/addTopic",
+            params: {
+              accessToken: localStorage.getItem("access_token")
+            },
+            data: {
+              topicName: this.topicInfo.TopicName,
+              type: this.topicInfo.Type,
+              introduction: this.topicInfo.Introduction
+            }
+          })
+            .then(response => {
+              var status = response.data.status;
+              var data = response.data;
+              if (status == 204) {
+                this.$Message.success("添加成功")
+              } else if (status == 401) {
+                this.$Message.error(data.message);
+                localStorage.removeItem("access_token");
+                this.$router.replace({
+                  name: "Login"
+                });
+              } else {
+                this.$Message.error(data.message);
+              }
+            })
+            .catch(error => {
+              this.$Message.error(error.message);
+              console.log(error);
+            });
         } else {
           this.$Message.error("请检查信息");
         }

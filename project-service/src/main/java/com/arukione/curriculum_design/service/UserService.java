@@ -1,13 +1,7 @@
 package com.arukione.curriculum_design.service;
 
-import com.arukione.curriculum_design.mapper.AdminMapper;
-import com.arukione.curriculum_design.mapper.ProfessionMapper;
-import com.arukione.curriculum_design.mapper.StudentMapper;
-import com.arukione.curriculum_design.mapper.TeacherMapper;
-import com.arukione.curriculum_design.model.DTO.Response.BaseInfoResponse;
-import com.arukione.curriculum_design.model.DTO.Response.LoginResponse;
-import com.arukione.curriculum_design.model.DTO.Response.Response;
-import com.arukione.curriculum_design.model.DTO.Response.UserInfoResponse;
+import com.arukione.curriculum_design.mapper.*;
+import com.arukione.curriculum_design.model.DTO.Response.*;
 import com.arukione.curriculum_design.model.entity.*;
 import com.arukione.curriculum_design.utils.Generator;
 import com.arukione.curriculum_design.utils.HTTPStatus;
@@ -20,7 +14,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.security.KeyException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -33,14 +26,15 @@ public class UserService {
     final StudentMapper studentMapper;
     final TeacherMapper teacherMapper;
     final ProfessionMapper professionMapper;
-
+    final TopicTypeMapper topicTypeMapper;
 
     @Autowired
-    UserService(AdminMapper adminMapper, StudentMapper studentMapper, TeacherMapper teacherMapper, ProfessionMapper professionMapper) {
+    UserService(AdminMapper adminMapper, StudentMapper studentMapper, TeacherMapper teacherMapper, ProfessionMapper professionMapper, TopicTypeMapper topicTypeMapper) {
         this.adminMapper = adminMapper;
         this.studentMapper = studentMapper;
         this.teacherMapper = teacherMapper;
         this.professionMapper = professionMapper;
+        this.topicTypeMapper = topicTypeMapper;
     }
 
     public LoginResponse studentLogin(String id, String password) {
@@ -179,7 +173,11 @@ public class UserService {
             e.printStackTrace();
             return new Response(HTTPStatus.Failed, e.getMessage());
         }
+    }
 
+    public TypeResponse getTopicType(){
+        ArrayList<TopicType> topicTypes = (ArrayList<TopicType>) topicTypeMapper.selectList(null);
+        return new TypeResponse(HTTPStatus.OK, topicTypes);
     }
 
 }
