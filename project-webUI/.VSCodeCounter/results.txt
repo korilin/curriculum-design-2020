@@ -1,0 +1,49 @@
+Date : 2020-06-10 19:16:04
+Directory : h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src
+Total : 21 files,  3098 codes, 0 comments, 79 blanks, all 3177 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| Vue        |         19 |      3,058 |          0 |         71 |      3,129 |
+| JavaScript |          2 |         40 |          0 |          8 |         48 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                           | files      | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                              |         21 |      3,098 |          0 |         79 |      3,177 |
+| components                                                                                     |         16 |      2,568 |          0 |         41 |      2,609 |
+| router                                                                                         |          1 |         26 |          0 |          5 |         31 |
+| views                                                                                          |          2 |        433 |          0 |         28 |        461 |
++------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                                       | language   | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\App.vue                          | Vue        |         57 |          0 |          2 |         59 |
+| h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\accountManage.vue     | Vue        |        547 |          0 |          3 |        550 |
+| h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\addStudent.vue        | Vue        |        174 |          0 |          2 |        176 |
+| h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\addTeacher.vue        | Vue        |        181 |          0 |          2 |        183 |
+| h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\addTopic.vue          | Vue        |        137 |          0 |          3 |        140 |
+| h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\allTeacher.vue        | Vue        |         79 |          0 |          2 |         81 |
+| h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\allTopic.vue          | Vue        |         87 |          0 |          2 |         89 |
+| h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\applyManage.vue       | Vue        |        135 |          0 |          2 |        137 |
+| h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\applyManageRecord.vue | Vue        |         85 |          0 |          2 |         87 |
+| h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\applyRecord.vue       | Vue        |        106 |          0 |          2 |        108 |
+| h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\guideStudents.vue     | Vue        |        109 |          0 |          2 |        111 |
+| h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\myTeacher.vue         | Vue        |         75 |          0 |          2 |         77 |
+| h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\myTopic.vue           | Vue        |         70 |          0 |          2 |         72 |
+| h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\studentTopicApply.vue | Vue        |        145 |          0 |          3 |        148 |
+| h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\teacherTopicApply.vue | Vue        |         84 |          0 |          3 |         87 |
+| h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\topicManage.vue       | Vue        |        233 |          0 |          2 |        235 |
+| h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\userInfo.vue          | Vue        |        321 |          0 |          7 |        328 |
+| h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\main.js                          | JavaScript |         14 |          0 |          3 |         17 |
+| h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\router\index.js                  | JavaScript |         26 |          0 |          5 |         31 |
+| h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\views\login.vue                  | Vue        |        157 |          0 |          4 |        161 |
+| h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\views\main.vue                   | Vue        |        276 |          0 |         24 |        300 |
+| Total                                                                                          |            |      3,098 |          0 |         79 |      3,177 |
++------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
