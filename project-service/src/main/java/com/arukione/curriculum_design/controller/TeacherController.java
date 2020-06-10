@@ -2,6 +2,7 @@ package com.arukione.curriculum_design.controller;
 
 import com.arukione.curriculum_design.model.DTO.Request.TopicInfo;
 import com.arukione.curriculum_design.model.DTO.Response.Response;
+import com.arukione.curriculum_design.model.DTO.Response.TopicTResponse;
 import com.arukione.curriculum_design.service.TeacherService;
 import com.arukione.curriculum_design.utils.HTTPStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,5 +29,10 @@ public class TeacherController {
     @PostMapping("addTopic")
     public Response addTopic(@RequestParam("accessToken")String accessToken, @RequestBody TopicInfo topicInfo){
         return teacherService.addTopic(accessToken, topicInfo);
+    }
+
+    @GetMapping("getTeacherTopic")
+    public TopicTResponse getTeacherTopic(@RequestParam("accessToken") String accessToken){
+        return (TopicTResponse) teacherService.getTopicT(accessToken);
     }
 }

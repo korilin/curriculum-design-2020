@@ -13,17 +13,17 @@
       </ListItem>
       <ListItem v-for="(topic,index) in topicList" :key="index">
         <Row class="row">
-          <Col span="5">{{topic.TopicID}}</Col>
-          <Col span="5">{{topic.TopicName}}</Col>
-          <Col span="5">{{topic.Type}}</Col>
-          <Col span="5">{{topic.SName?topic.SName:"未选"}}</Col>
+          <Col span="5">{{topic.topicID}}</Col>
+          <Col span="5">{{topic.topicName}}</Col>
+          <Col span="5">{{topic.type}}</Col>
+          <Col span="5">{{topic.sname?topic.sname:"未选"}}</Col>
           <Col span="4">
             <Button type="primary" size="small" class="opButton" @click="changeTopic(index)">修改</Button>
             <Button
               type="error"
               size="small"
               class="opButton"
-              @click="deleteTopic(topic.TopicID)"
+              @click="deleteTopic(topic.topicID,index)"
             >删除</Button>
           </Col>
         </Row>
@@ -31,20 +31,36 @@
     </List>
     <Modal
       v-model="showInfoModal"
-      :title="'课题：'+topicList[selectTopic].TopicID"
+      :title="'修改课题信息：'+topicList[selectTopic].topicID"
       class-name="vertical-center-modal"
       @on-ok="changeOK"
       @on-cancel="changeCancel"
+      :loading="true"
     >
       <div style="width:400px;margin:30px auto">
         <Select v-model="selectKey" placeholder="选择需要修改的信息" @on-change="keyChange">
-          <Option
-            v-for="(value,key) in topicList[selectTopic]"
-            :value="key"
-            :key="key"
-          >{{keyList[key]}}</Option>
+          <template v-for="(value,key) in topicList[selectTopic]">
+            <Option
+              v-if="key=='topicName'||key=='introduction'||key=='type'"
+              :value="key"
+              :key="key"
+            >{{keyList[key]}}</Option>
+          </template>
         </Select>
-        <Input v-model="newValue" placeholder="填写修改后的信息" class="Top30"></Input>
+        <Input
+          v-model="newValue"
+          placeholder="填写修改后的信息"
+          class="Top30"
+          v-if="selectKey!='introduction'"
+        ></Input>
+        <Input
+          v-model="newValue"
+          class="Top30"
+          :autosize="{minRows: 4}"
+          type="textarea"
+          placeholder="填写修改后的信息"
+          v-if="selectKey==='introduction'"
+        ></Input>
       </div>
     </Modal>
   </div>
@@ -60,52 +76,112 @@ export default {
       showInfoModal: false,
       newValue: "",
       keyList: {
-        TopicName: "课题名",
-        Introduction: "课题介绍",
-        Type: "课题类型"
+        topicName: "课题名",
+        introduction: "课题介绍",
+        type: "课题类型"
       },
       topicList: []
     };
   },
   created() {
-    this.topicList = [
-      {
-        TopicID: 1003,
-        TopicName: "课设1",
-        Introduction: "无介绍",
-        Type: "其它",
-        SName: null
-      },
-      {
-        TopicID: 1004,
-        TopicName: "毕业设计选题系统",
-        Introduction: "毕业设计选题系统课题介绍",
-        Type: "软件设计类",
-        SName: "ARUKI"
+    this.axios({
+      method: "get",
+      url: "/getTeacherTopic",
+      params: {
+        accessToken: localStorage.getItem("access_token")
       }
-    ];
+    })
+      .then(response => {
+        if (response.data.status == 200) this.topicList = response.data.topicTS;
+        else this.$Message.error("课题获取失败");
+      })
+      .catch(error => {
+        this.$Message.error(error.message);
+        console.log(error);
+      });
   },
   methods: {
     changeTopic: function(index) {
       this.selectTopic = index;
       this.showInfoModal = true;
     },
-    deleteTopic: function(TopicID) {
-      if (this.$Modal.confirm({ title: "确认删除课题：" + TopicID })) {
-        this.$Message.success("删除成功");
-      }
+    deleteTopic: function(topicID, index) {
+      this.$Modal.confirm({
+        title: "确认删除课题：" + topicID,
+        loading: true,
+        onOk: () => {
+          this.axios({
+            method: "delete",
+            url: "/deleteTopic",
+            params: {
+              accessToken: localStorage.getItem("access_token"),
+              topicId: topicID
+            }
+          })
+            .then(response => {
+              var status = response.data.status;
+              var data = response.data;
+              if (status == 204) {
+                this.topicList.splice(index, 1);
+                this.$Modal.remove();
+                this.$Message.success(topicID + "账号删除成功");
+              } else if (status == 401) {
+                this.$Message.error(response.data.message);
+                localStorage.removeItem("access_token");
+                this.$router.replace({
+                  name: "Login"
+                });
+              } else this.$Message.error(data.message);
+            })
+            .catch(error => {
+              this.$Message.error(error.message);
+              console.log(error);
+            });
+        }
+      });
     },
     keyChange: function(key) {
       this.newValue = this.topicList[this.selectTopic][key];
     },
     changeOK: function() {
-      this.$Message.success("修改成功！");
-      this.changeCancel();
+      var id = this.topicList[this.selectTopic].topicID;
+      this.axios({
+        method: "post",
+        url: "/changeTopicInfo",
+        params: {
+          accessToken: localStorage.getItem("access_token"),
+          key: this.selectKey,
+          value: this.newValue,
+          topicID: id
+        }
+      })
+        .then(response => {
+          var data = response.data;
+          if (data.status == 204) {
+            this.studentList[this.paneSelect][this.selectKey] = this.newValue;
+            this.$Message.success("修改成功");
+          } else if (status == 401) {
+            this.$Message.error(data.message);
+            localStorage.removeItem("access_token");
+            this.$router.replace({
+              name: "Login"
+            });
+          } else {
+            this.$Message.error(data.message);
+          }
+          this.changeCancel();
+        })
+        .catch(error => {
+          this.$Message.error(error.message);
+          console.log(error);
+          this.changeCancel();
+        });
     },
     changeCancel: function() {
       this.selectTopic = 0;
       this.selectKey = "";
       this.newValue = "";
+      this.showInfoModal = false;
     }
   }
 };

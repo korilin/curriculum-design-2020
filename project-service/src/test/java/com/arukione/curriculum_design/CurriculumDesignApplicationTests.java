@@ -2,6 +2,7 @@ package com.arukione.curriculum_design;
 
 import com.arukione.curriculum_design.mapper.AdminMapper;
 import com.arukione.curriculum_design.mapper.ProfessionMapper;
+import com.arukione.curriculum_design.mapper.TopicInfoMapper;
 import com.arukione.curriculum_design.model.entity.Admin;
 import com.arukione.curriculum_design.model.entity.Profession;
 import com.arukione.curriculum_design.service.UserService;
@@ -26,6 +27,8 @@ class CurriculumDesignApplicationTests {
 	ProfessionMapper professionMapper;
 	@Resource
 	RedisTemplate<String, Object> redisTemplate;
+	@Autowired
+	TopicInfoMapper topicInfoMapper;
 
 	@Test
 	void contextLoads() {
@@ -63,5 +66,10 @@ class CurriculumDesignApplicationTests {
 	@Test
 	void topicIDTest(){
 		System.out.println(Generator.generateTopicID());
+	}
+
+	@Test
+	void getTopicN() {
+		System.out.println(topicInfoMapper.getTopicN("10021"));
 	}
 }
