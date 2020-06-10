@@ -35,4 +35,17 @@ public class TeacherController {
     public TopicTResponse getTeacherTopic(@RequestParam("accessToken") String accessToken){
         return (TopicTResponse) teacherService.getTopicT(accessToken);
     }
+
+    @PostMapping("changeTopicInfo")
+    public Response changeTopicInfo(@RequestParam("accessToken") String accessToken,
+                                    @RequestParam("key") String key,
+                                    @RequestParam("value") String value,
+                                    @RequestParam("topicID") String id){
+        return teacherService.changeTopicInfo(accessToken, key, value, id);
+    }
+
+    @DeleteMapping("deleteTeacherTopic")
+    public Response deleteTeacherTopic(@RequestParam("accessToken") String accessToken, @RequestParam("topicID") String id){
+        return teacherService.deleteTopic(accessToken, id);
+    }
 }

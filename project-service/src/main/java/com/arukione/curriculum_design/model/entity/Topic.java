@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.security.KeyException;
+
 @TableName("topic_info")
 @Builder
 @Data
@@ -28,4 +30,20 @@ public class Topic {
     String source;
     @TableField("SID")
     String sid;
+
+    public void setValue(String key, String value) throws KeyException {
+        switch (key) {
+            case "topicName":
+                this.topicName = value;
+                break;
+            case "introduction":
+                this.introduction = value;
+                break;
+            case "type":
+                this.typeId = value;
+                break;
+            default:
+                throw new KeyException("找不到该键对应的字段");
+        }
+    }
 }

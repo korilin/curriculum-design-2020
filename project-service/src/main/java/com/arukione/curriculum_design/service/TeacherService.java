@@ -4,14 +4,12 @@ import com.arukione.curriculum_design.exception.PermissionException;
 import com.arukione.curriculum_design.mapper.StudentMapper;
 import com.arukione.curriculum_design.mapper.TeacherMapper;
 import com.arukione.curriculum_design.mapper.TopicInfoMapper;
+import com.arukione.curriculum_design.mapper.TopicTypeMapper;
 import com.arukione.curriculum_design.model.DTO.Request.TopicInfo;
 import com.arukione.curriculum_design.model.DTO.Response.Response;
 import com.arukione.curriculum_design.model.DTO.Response.TopicTResponse;
-import com.arukione.curriculum_design.model.TO.TopicT;
-import com.arukione.curriculum_design.model.entity.Student;
-import com.arukione.curriculum_design.model.entity.Teacher;
-import com.arukione.curriculum_design.model.entity.Topic;
-import com.arukione.curriculum_design.model.entity.User;
+import com.arukione.curriculum_design.model.VO.TopicView;
+import com.arukione.curriculum_design.model.entity.*;
 import com.arukione.curriculum_design.utils.Generator;
 import com.arukione.curriculum_design.utils.HTTPStatus;
 import com.arukione.curriculum_design.utils.Message;
@@ -34,13 +32,15 @@ public class TeacherService {
     final StudentMapper studentMapper;
     final TeacherMapper teacherMapper;
     final TopicInfoMapper topicInfoMapper;
+    final TopicTypeMapper topicTypeMapper;
 
     @Autowired
-    TeacherService(UserService userService, StudentMapper studentMapper, TeacherMapper teacherMapper, TopicInfoMapper topicInfoMapper) {
+    TeacherService(UserService userService, StudentMapper studentMapper, TeacherMapper teacherMapper, TopicInfoMapper topicInfoMapper, TopicTypeMapper topicTypeMapper) {
         this.userService = userService;
         this.studentMapper = studentMapper;
         this.teacherMapper = teacherMapper;
         this.topicInfoMapper = topicInfoMapper;
+        this.topicTypeMapper = topicTypeMapper;
     }
 
     Response teacherPermission(String accessToken) {
@@ -78,9 +78,13 @@ public class TeacherService {
         }
     }
 
-    public Response addTopic(String accessToken, TopicInfo topicInfo){
+    public Response addTopic(String accessToken, TopicInfo topicInfo) {
         try {
             Teacher teacher = (Teacher) userService.permission(accessToken, "Teacher");
+            QueryWrapper<Topic> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("TID", teacher.getTid());
+            List<Topic> topics = topicInfoMapper.selectList(queryWrapper);
+            if(topics.size()>=20) return new Response(HTTPStatus.Failed, "您已有的课题已经达到了20个，无法继续添加");
             Topic topic = Topic.builder()
                     .topicId(Generator.generateTopicID())
                     .topicName(topicInfo.getTopicName())
@@ -101,19 +105,46 @@ public class TeacherService {
         try {
             Teacher teacher = (Teacher) userService.permission(accessToken, "Teacher");
             String tid = teacher.getTid();
-            ArrayList<TopicT> topicTS = topicInfoMapper.getTopicN(tid);
-            for(TopicT topic: topicTS){
+            ArrayList<TopicView> topicViews = topicInfoMapper.getTopicN(tid);
+            for (TopicView topic : topicViews) {
                 String sid = topic.getSID();
-                if (sid==null) break;
+                if (sid == null) break;
                 Student student = studentMapper.selectById(sid);
                 topic.setSName(student.getName());
             }
-            return new TopicTResponse(HTTPStatus.OK, topicTS);
-        }catch (PermissionException permissionException) {
+            return new TopicTResponse(HTTPStatus.OK, topicViews);
+        } catch (PermissionException permissionException) {
             return new Response(HTTPStatus.NotAllowed, Message.USER_PERMISSION_ERROR);
         } catch (NullPointerException npe) {
             return new Response(HTTPStatus.Unauthorized, Message.NO_LOGIN_STATUS);
         }
+    }
+
+    public Response changeTopicInfo(String accessToken, String key, String value, String id) {
+        Response response = teacherPermission(accessToken);
+        if (response != null) return response;
+        Topic topic = new Topic();
+        try {
+            if (key.equals("type")){
+                QueryWrapper<TopicType> queryWrapper = new QueryWrapper<>();
+                queryWrapper.eq("TypeName", value);
+                List<TopicType> topicTypes = topicTypeMapper.selectList(queryWrapper);
+                value = topicTypes.get(0).getTypeId();
+            }
+            topic.setValue(key, value);
+            topic.setTopicId(id);
+            return userService.updateResult(topicInfoMapper.updateById(topic));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return new Response(HTTPStatus.Failed, e.getMessage());
+        }
+    }
+
+    public Response deleteTopic(String accessToken, String id){
+        Response response = teacherPermission(accessToken);
+        if (response != null) return response;
+        return userService.updateResult(topicInfoMapper.deleteById(id));
     }
 
 }

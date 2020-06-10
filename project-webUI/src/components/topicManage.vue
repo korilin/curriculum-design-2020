@@ -31,6 +31,7 @@
     </List>
     <Modal
       v-model="showInfoModal"
+      v-if="selectTopic!=-1"
       :title="'修改课题信息：'+topicList[selectTopic].topicID"
       class-name="vertical-center-modal"
       @on-ok="changeOK"
@@ -51,7 +52,7 @@
           v-model="newValue"
           placeholder="填写修改后的信息"
           class="Top30"
-          v-if="selectKey!='introduction'"
+          v-if="selectKey=='topicName'"
         ></Input>
         <Input
           v-model="newValue"
@@ -61,6 +62,15 @@
           placeholder="填写修改后的信息"
           v-if="selectKey==='introduction'"
         ></Input>
+        <div v-if="selectKey==='type'" class="Top30">
+          <Select v-model="newValue">
+            <Option value="工程设计类">工程设计类</Option>
+            <Option value="理论研究类">理论研究类</Option>
+            <Option value="应用（实验）研究类">应用（实验）研究类</Option>
+            <Option value="软件设计类">软件设计类</Option>
+            <Option value="其它">其它</Option>
+          </Select>
+        </div>
       </div>
     </Modal>
   </div>
@@ -71,7 +81,7 @@ export default {
   name: "TopicManage",
   data() {
     return {
-      selectTopic: 0,
+      selectTopic: -1,
       selectKey: "",
       showInfoModal: false,
       newValue: "",
@@ -84,6 +94,16 @@ export default {
     };
   },
   created() {
+    this.axios
+      .get("/getType")
+      .then(response => {
+        if (response.data.status == 200) this.type = response.data.type;
+        else this.$Message.error("课题类型获取失败");
+      })
+      .catch(error => {
+        this.$Message.error(error.message);
+        console.log(error);
+      });
     this.axios({
       method: "get",
       url: "/getTeacherTopic",
@@ -112,10 +132,10 @@ export default {
         onOk: () => {
           this.axios({
             method: "delete",
-            url: "/deleteTopic",
+            url: "/deleteTeacherTopic",
             params: {
               accessToken: localStorage.getItem("access_token"),
-              topicId: topicID
+              topicID: topicID
             }
           })
             .then(response => {
@@ -124,7 +144,7 @@ export default {
               if (status == 204) {
                 this.topicList.splice(index, 1);
                 this.$Modal.remove();
-                this.$Message.success(topicID + "账号删除成功");
+                this.$Message.success("课题" + topicID + "删除成功");
               } else if (status == 401) {
                 this.$Message.error(response.data.message);
                 localStorage.removeItem("access_token");
@@ -144,6 +164,15 @@ export default {
       this.newValue = this.topicList[this.selectTopic][key];
     },
     changeOK: function() {
+      if (this.selectKey === "") {
+        this.changeCancel();
+        return;
+      } else if (
+        this.newValue === this.topicList[this.selectTopic][this.selectKey]
+      ) {
+        this.changeCancel();
+        return;
+      }
       var id = this.topicList[this.selectTopic].topicID;
       this.axios({
         method: "post",
@@ -158,7 +187,7 @@ export default {
         .then(response => {
           var data = response.data;
           if (data.status == 204) {
-            this.studentList[this.paneSelect][this.selectKey] = this.newValue;
+            this.topicList[this.selectTopic][this.selectKey] = this.newValue;
             this.$Message.success("修改成功");
           } else if (status == 401) {
             this.$Message.error(data.message);

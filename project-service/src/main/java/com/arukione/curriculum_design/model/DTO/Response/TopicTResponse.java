@@ -1,6 +1,6 @@
 package com.arukione.curriculum_design.model.DTO.Response;
 
-import com.arukione.curriculum_design.model.TO.TopicT;
+import com.arukione.curriculum_design.model.VO.TopicView;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -10,10 +10,10 @@ import java.util.ArrayList;
 @EqualsAndHashCode(callSuper = true)
 public class TopicTResponse extends Response{
 
-    ArrayList<TopicT> topicTS;
+    ArrayList<TopicView> topicViews;
 
-    public TopicTResponse(int status, ArrayList<TopicT> topicTS){
+    public TopicTResponse(int status, ArrayList<TopicView> topicViews){
         super(status);
-        this.topicTS = topicTS;
+        this.topicViews = topicViews;
     }
 }
