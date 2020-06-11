@@ -20,4 +20,7 @@ public interface ProfessionMapper extends BaseMapper<Profession> {
             "where " +
             "profession.DeptID=department.DeptID;")
     List<Profession> getProfessionsIncludeDepartment();
+
+    @Select("select ProfName name,DeptID from profession where ProfID=#{profid}")
+    Profession getProfession(String profid);
 }
