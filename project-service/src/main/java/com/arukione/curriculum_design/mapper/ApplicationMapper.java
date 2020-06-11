@@ -10,6 +10,6 @@ import java.util.ArrayList;
 @Repository
 public interface ApplicationMapper extends BaseMapper<Application> {
 
-    @Select("select * from application where Status = '0'")
-    ArrayList<Application> getApplicationsOfStatus();
+    @Select("select * from application where Status=#{status}")
+    ArrayList<Application> getApplicationsOfStatus(String status);
 }

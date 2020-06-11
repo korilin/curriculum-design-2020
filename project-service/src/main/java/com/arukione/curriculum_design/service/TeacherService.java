@@ -5,8 +5,6 @@ import com.arukione.curriculum_design.exception.PermissionException;
 import com.arukione.curriculum_design.mapper.*;
 import com.arukione.curriculum_design.model.DTO.Request.TopicInfo;
 import com.arukione.curriculum_design.model.DTO.Response.Response;
-import com.arukione.curriculum_design.model.DTO.Request.TopicInfo;
-import com.arukione.curriculum_design.model.DTO.Response.Response;
 import com.arukione.curriculum_design.model.DTO.Response.TopicTResponse;
 import com.arukione.curriculum_design.model.VO.TopicView;
 import com.arukione.curriculum_design.model.entity.*;
@@ -17,6 +15,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -33,7 +32,6 @@ public class TeacherService {
     final TeacherMapper teacherMapper;
     final TopicInfoMapper topicInfoMapper;
     final ApplicationMapper applicationMapper;
-    final StudentMapper studentMapper;
     final ProfessionMapper professionMapper;
     final DepartmentMapper departmentMapper;
     final TopicTypeMapper topicTypeMapper;
@@ -48,7 +46,6 @@ public class TeacherService {
         this.teacherMapper = teacherMapper;
         this.topicInfoMapper = topicInfoMapper;
         this.applicationMapper=applicationMapper;
-        this.studentMapper=studentMapper;
         this.professionMapper=professionMapper;
         this.departmentMapper=departmentMapper;
         this.topicTypeMapper=topicTypeMapper;
@@ -112,14 +109,14 @@ public class TeacherService {
         }
     }
 
-    public ArrayList<Object> getStudentApply(){
+    public ArrayList<Object> getStudentApply(String status) {
         ArrayList<Object> response = new ArrayList<Object>();
 
         //获取所有未处理申请数据的学生id与课题id及时间
-        ArrayList<Application> apps = applicationMapper.getApplicationsOfStatus();
+        ArrayList<Application> apps = applicationMapper.getApplicationsOfStatus(status);
 
         //循环获取所有详细信息
-        for(int i=0;i<apps.size();i++){
+        for (int i = 0; i < apps.size(); i++) {
             ArrayList<Object> temp = new ArrayList<Object>();
             Application app = apps.get(i);
 
@@ -135,6 +132,7 @@ public class TeacherService {
 
             //添加List
             temp.add(app.getApplyTime());
+            temp.add(app.getStatus());
             temp.add(stu);
             temp.add(pro);
             temp.add(dep);
@@ -143,7 +141,7 @@ public class TeacherService {
             response.add(temp);
         }
         return response;
-
+    }
     public Response getTopicT(String accessToken) {
         try {
             Teacher teacher = (Teacher) userService.permission(accessToken, "Teacher");
