@@ -27,6 +27,6 @@ public interface TopicInfoMapper extends BaseMapper<Topic> {
             "from topic_info,teacher,topic_type where " +
             "topic_info.TID=teacher.TID and " +
             "topic_info.TypeID=topic_type.TypeID and " +
-            "GuideProfID=#{profId} and SID is null")
+            "GuideProfID=#{profId} and SID is null and Source='0'")
     ArrayList<SelectableTopicInfo> getSelectableTopicInfo(String profId);
 }

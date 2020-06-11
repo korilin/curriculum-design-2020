@@ -102,7 +102,7 @@ public class StudentService {
                     .introduction(topicInfo.getIntroduction())
                     .tid(tid)
                     .typeId(topicInfo.getTypeId())
-                    .source("0")
+                    .source("1")
                     .build();
             if (topicInfoMapper.insert(topic) != 1) return new Response(HTTPStatus.Failed, Message.DB_NOT_OPERATION);
             return getApplyResult(student, topicId);
