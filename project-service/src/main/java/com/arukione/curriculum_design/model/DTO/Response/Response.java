@@ -7,6 +7,7 @@ public class Response {
     int status;
     String message;
 
+
     public Response(int status){
         this.status = status;
         this.message = "";
