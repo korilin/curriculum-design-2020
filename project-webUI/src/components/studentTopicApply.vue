@@ -109,11 +109,11 @@ export default {
         console.log(error);
       });
     this.type = {
-      10001: "工程设计类",
-      10002: "理论研究类",
-      10003: "应用（实验）研究类",
-      10004: "软件设计类",
-      10005: "其它"
+      1001: "工程设计类",
+      1002: "理论研究类",
+      1003: "应用（实验）研究类",
+      1004: "软件设计类",
+      1000: "其它"
     };
   },
   methods: {
@@ -132,20 +132,20 @@ export default {
             method: "post",
             url: "/applyStudentTopic",
             params: {
-              accessToken: localStorage.getItem("access_token")
+              accessToken: localStorage.getItem("access_token"),
+              tid: this.applyForm.TID
             },
             data: {
               topicName: this.applyForm.TopicName,
               typeId: this.applyForm.Type,
-              introduction: this.applyForm.Introduction,
-              tid: this.applyForm.TID
+              introduction: this.applyForm.Introduction
             }
           })
             .then(response => {
               var status = response.data.status;
               var data = response.data;
               if (status == 204) {
-                console.log();
+                this.$Message.success("申请成功");
               } else if (status == 401) {
                 this.$Message.error(response.data.message);
                 localStorage.removeItem("access_token");

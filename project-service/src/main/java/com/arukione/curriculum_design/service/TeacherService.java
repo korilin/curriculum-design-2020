@@ -97,7 +97,7 @@ public class TeacherService {
                     .topicName(topicInfo.getTopicName())
                     .introduction(topicInfo.getIntroduction())
                     .tid(teacher.getTid())
-                    .typeId(topicInfo.getType())
+                    .typeId(topicInfo.getTypeId())
                     .source("0")
                     .build();
             return userService.opsResult(topicInfoMapper.insert(topic));
