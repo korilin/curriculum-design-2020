@@ -10,7 +10,12 @@
     >
       <FormItem label="选择导师" prop="TID">
         <Select v-model="applyForm.TID" placeholder="请选择导师">
-          <Option v-for="(teacher,index) in teachers" :value="teacher.TID" :key="index" @click.native="teacherChange(index)">{{teacher.TName}}</Option>
+          <Option
+            v-for="(teacher,index) in teachers"
+            :value="teacher.tid"
+            :key="index"
+            @click.native="teacherChange(index)"
+          >{{teacher.name}}</Option>
         </Select>
       </FormItem>
       <div v-show="showDemand" class="demandWrap">
@@ -53,7 +58,7 @@ export default {
         TopicName: "",
         Type: "",
         Introduction: "",
-        TID: ""
+        TID: "0"
       },
       ApplyRule: {
         TopicName: [
@@ -82,45 +87,77 @@ export default {
     };
   },
   created() {
-    this.teachers = [
-      { TID: "10001", TName: "teacher1", TopicDemand: "无要求" },
-      {
-        TID: "10002",
-        TName: "teacher2",
-        TopicDemand:
-          "视图是一个由查询定义内容的虚拟表, 和基本表差不多, 不过在数据库中并不上以数据值存储集形式存在的, 除非是索引视图。"
-      },
-      {
-        TID: "10003",
-        TName: "teacher3",
-        TopicDemand:
-          "Nginx可以用来做Web服务器或者反向代理，当Nginx作为反向代理软件时，每个网络请求都会先由Nginx接收，Nginx会根据配置文件里的配置对请求进行过滤处理，等请求完全接收完再发送给上游服务器一次性处理，从而可以提高上游服务器的工作性"
+    this.axios({
+      method: "get",
+      url: "/getSelectableTeacher",
+      params: {
+        accessToken: localStorage.getItem("access_token")
       }
-    ];
+    })
+      .then(response => {
+        if (response.data.status == 200) this.teachers = response.data.teachers;
+        else if (status == 401) {
+          this.$Message.error(response.data.message);
+          localStorage.removeItem("access_token");
+          this.$router.replace({
+            name: "Login"
+          });
+        } else this.$Message.error(response.data.message);
+      })
+      .catch(error => {
+        this.$Message.error(error.message);
+        console.log(error);
+      });
     this.type = {
-      10001: "工程设计类",
-      10002: "理论研究类",
-      10003: "应用（实验）研究类",
-      10004: "软件设计类",
-      10005: "其它"
+      1001: "工程设计类",
+      1002: "理论研究类",
+      1003: "应用（实验）研究类",
+      1004: "软件设计类",
+      1000: "其它"
     };
   },
   methods: {
     teacherChange: function(index) {
-      this.applyForm.TID = this.teachers[index].TID;
-      this.demand = this.teachers[index].TopicDemand;
+      this.applyForm.TID = this.teachers[index].tid;
+      this.demand = this.teachers[index].topicDemand;
       this.showDemand = true;
     },
     typeChange: function(key) {
       this.applyForm.Type = key;
     },
     applySubmit: function(name) {
-      this.$refs[name].validate((valid,error) => {
+      this.$refs[name].validate(valid => {
         if (valid) {
-          this.$Message.success("已提交申请");
-        }
-        if(error){
-          console.log(error)
+          this.axios({
+            method: "post",
+            url: "/applyStudentTopic",
+            params: {
+              accessToken: localStorage.getItem("access_token"),
+              tid: this.applyForm.TID
+            },
+            data: {
+              topicName: this.applyForm.TopicName,
+              typeId: this.applyForm.Type,
+              introduction: this.applyForm.Introduction
+            }
+          })
+            .then(response => {
+              var status = response.data.status;
+              var data = response.data;
+              if (status == 204) {
+                this.$Message.success("申请成功");
+              } else if (status == 401) {
+                this.$Message.error(response.data.message);
+                localStorage.removeItem("access_token");
+                this.$router.replace({
+                  name: "Login"
+                });
+              } else this.$Message.error(data.message);
+            })
+            .catch(error => {
+              this.$Message.error(error.message);
+              console.log(error);
+            });
         }
       });
     }

@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class TopicInfo {
     String topicName;
-    String type;
+    String typeId;
     String introduction;
 }

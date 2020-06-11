@@ -70,6 +70,7 @@ public class AdminService {
         Response response = adminPermission(newTeacher.getAccessToken());
         if (response != null) return response;
         Teacher teacher = newTeacher.convertTeacher();
+        System.out.println(teacher);
         try {
             if (teacherMapper.insert(teacher) == 1)
                 return new Response(HTTPStatus.Success);

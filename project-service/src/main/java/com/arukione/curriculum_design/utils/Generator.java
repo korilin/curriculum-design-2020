@@ -1,5 +1,6 @@
 package com.arukione.curriculum_design.utils;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
@@ -14,4 +15,9 @@ public class Generator {
         return String.valueOf(time);
     }
 
+    public static String getNowTime(){
+        Date date = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("yyy-MM-dd HH:mm:ss");
+        return format.format(date);
+    }
 }
