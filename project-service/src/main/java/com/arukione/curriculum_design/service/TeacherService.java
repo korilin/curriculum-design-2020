@@ -1,10 +1,8 @@
 package com.arukione.curriculum_design.service;
 
 import com.arukione.curriculum_design.exception.PermissionException;
-import com.arukione.curriculum_design.mapper.StudentMapper;
-import com.arukione.curriculum_design.mapper.TeacherMapper;
-import com.arukione.curriculum_design.mapper.TopicInfoMapper;
-import com.arukione.curriculum_design.mapper.TopicTypeMapper;
+
+import com.arukione.curriculum_design.mapper.*;
 import com.arukione.curriculum_design.model.DTO.Request.TopicInfo;
 import com.arukione.curriculum_design.model.DTO.Response.Response;
 import com.arukione.curriculum_design.model.DTO.Response.TopicTResponse;
@@ -17,6 +15,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -32,15 +31,24 @@ public class TeacherService {
     final StudentMapper studentMapper;
     final TeacherMapper teacherMapper;
     final TopicInfoMapper topicInfoMapper;
+    final ApplicationMapper applicationMapper;
+    final ProfessionMapper professionMapper;
+    final DepartmentMapper departmentMapper;
     final TopicTypeMapper topicTypeMapper;
 
     @Autowired
-    TeacherService(UserService userService, StudentMapper studentMapper, TeacherMapper teacherMapper, TopicInfoMapper topicInfoMapper, TopicTypeMapper topicTypeMapper) {
+    TeacherService(UserService userService, TeacherMapper teacherMapper,
+                   ApplicationMapper applicationMapper,StudentMapper studentMapper,
+                   ProfessionMapper professionMapper,DepartmentMapper departmentMapper,
+                   TopicInfoMapper topicInfoMapper,TopicTypeMapper topicTypeMapper) {
         this.userService = userService;
         this.studentMapper = studentMapper;
         this.teacherMapper = teacherMapper;
         this.topicInfoMapper = topicInfoMapper;
-        this.topicTypeMapper = topicTypeMapper;
+        this.applicationMapper=applicationMapper;
+        this.professionMapper=professionMapper;
+        this.departmentMapper=departmentMapper;
+        this.topicTypeMapper=topicTypeMapper;
     }
 
     Response teacherPermission(String accessToken) {
@@ -101,6 +109,39 @@ public class TeacherService {
         }
     }
 
+    public ArrayList<Object> getStudentApply(String status) {
+        ArrayList<Object> response = new ArrayList<Object>();
+
+        //获取所有未处理申请数据的学生id与课题id及时间
+        ArrayList<Application> apps = applicationMapper.getApplicationsOfStatus(status);
+
+        //循环获取所有详细信息
+        for (int i = 0; i < apps.size(); i++) {
+            ArrayList<Object> temp = new ArrayList<Object>();
+            Application app = apps.get(i);
+
+            //获得studentInfo
+            Student stu = studentMapper.getStudent(app.getSid());//获得sname,proid
+            Profession pro = professionMapper.getProfession(stu.getProfessionId());//获得proname,depid
+            Department dep = departmentMapper.getDepartmen(pro.getDeptId());//获得depname
+
+            //获得topicInfo
+            Topic topic = topicInfoMapper.getTopic(app.getTopicId());//获得topicname,introduction,Source
+
+            TopicType type = topicTypeMapper.getTopicType(topic.getTypeId());//获得typename
+
+            //添加List
+            temp.add(app.getApplyTime());
+            temp.add(app.getStatus());
+            temp.add(stu);
+            temp.add(pro);
+            temp.add(dep);
+            temp.add(topic);
+            temp.add(type);
+            response.add(temp);
+        }
+        return response;
+    }
     public Response getTopicT(String accessToken) {
         try {
             Teacher teacher = (Teacher) userService.permission(accessToken, "Teacher");

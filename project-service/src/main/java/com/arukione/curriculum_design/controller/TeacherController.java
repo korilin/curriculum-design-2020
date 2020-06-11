@@ -4,14 +4,16 @@ import com.arukione.curriculum_design.model.DTO.Request.TopicInfo;
 import com.arukione.curriculum_design.model.DTO.Response.Response;
 import com.arukione.curriculum_design.model.DTO.Response.TopicTResponse;
 import com.arukione.curriculum_design.service.TeacherService;
-import com.arukione.curriculum_design.utils.HTTPStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 
 @RestController
 public class TeacherController {
 
     final TeacherService teacherService;
+
 
     @Autowired
     TeacherController(TeacherService teacherService){
@@ -29,6 +31,12 @@ public class TeacherController {
     @PostMapping("addTopic")
     public Response addTopic(@RequestParam("accessToken")String accessToken, @RequestBody TopicInfo topicInfo){
         return teacherService.addTopic(accessToken, topicInfo);
+    }
+
+    //获取未处理申请数据
+    @GetMapping("getStudentApply")
+    public ArrayList<Object> getStudentApply(@RequestParam("status") String status){
+        return teacherService.getStudentApply(status);
     }
 
     @GetMapping("getTeacherTopic")
