@@ -34,6 +34,28 @@ export default {
     };
   },
   created() {
+    this.axios({
+      method: "get",
+      url: "/getAllowTopic",
+      params: {
+        accessToken: localStorage.getItem("access_token")
+      }
+    })
+      .then(response => {
+        var status = response.data.status;
+        if (status == 200) this.teachers = response.data.teachers;
+        else if (status == 401) {
+          this.$Message.error(response.data.message);
+          localStorage.removeItem("access_token");
+          this.$router.replace({
+            name: "Login"
+          });
+        } else this.$Message.error(response.data.message);
+      })
+      .catch(error => {
+        this.$Message.error(error.message);
+        console.log(error);
+      });
     this.topicInfo = {
       TopicName: "毕业设计选题系统",
       TName: "老师一",

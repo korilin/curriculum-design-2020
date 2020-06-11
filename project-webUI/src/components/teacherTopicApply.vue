@@ -57,8 +57,8 @@ export default {
       }
     })
       .then(response => {
-        if (response.data.status == 200)
-          this.topics = response.data.selectableTopicInfos;
+        var status = response.data.status;
+        if (status == 200) this.topics = response.data.selectableTopicInfos;
         else if (status == 401) {
           this.$Message.error(response.data.message);
           localStorage.removeItem("access_token");
@@ -80,7 +80,8 @@ export default {
       }
     })
       .then(response => {
-        if (response.data.status == 200) this.teachers = response.data.teachers;
+        var status = response.data.status;
+        if (status == 200) this.teachers = response.data.teachers;
         else if (status == 401) {
           this.$Message.error(response.data.message);
           localStorage.removeItem("access_token");

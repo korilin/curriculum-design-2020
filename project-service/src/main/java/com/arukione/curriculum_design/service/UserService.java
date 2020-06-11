@@ -23,7 +23,6 @@ public class UserService {
     @Resource
     private RedisTemplate<String, User> redisTemplate;
     final AdminMapper adminMapper;
-    final ApplicationMapper applicationMapper;
     final StudentMapper studentMapper;
     final TeacherMapper teacherMapper;
     final ProfessionMapper professionMapper;
@@ -31,16 +30,15 @@ public class UserService {
     final TopicTypeMapper topicTypeMapper;
 
     @Autowired
-    UserService(AdminMapper adminMapper,ApplicationMapper applicationMapper,
+    UserService(AdminMapper adminMapper,
                 StudentMapper studentMapper, TeacherMapper teacherMapper,
                 ProfessionMapper professionMapper, TopicInfoMapper topicInfoMapper,
                 TopicTypeMapper topicTypeMapper) {
         this.adminMapper = adminMapper;
-        this.applicationMapper=applicationMapper;
         this.studentMapper = studentMapper;
         this.teacherMapper = teacherMapper;
         this.professionMapper = professionMapper;
-        this.topicInfoMapper=topicInfoMapper;
+        this.topicInfoMapper = topicInfoMapper;
         this.topicTypeMapper = topicTypeMapper;
     }
 
@@ -145,8 +143,8 @@ public class UserService {
         }
     }
 
-    public Response opsResult(int i){
-       return i==1? new Response(HTTPStatus.Success):new Response(HTTPStatus.Failed, Message.DB_NOT_OPERATION);
+    public Response opsResult(int i) {
+        return i == 1 ? new Response(HTTPStatus.Success) : new Response(HTTPStatus.Failed, Message.DB_NOT_OPERATION);
     }
 
     public Response changePassword(String accessToken, String password) {
@@ -174,82 +172,19 @@ public class UserService {
                     adminN.setAdminId(admin.getAdminId());
                     adminN.setPassword(password);
                     return opsResult(adminMapper.updateById(adminN));
-                default: throw new Exception("Error");
+                default:
+                    throw new Exception("Error");
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return new Response(HTTPStatus.Failed, e.getMessage());
         }
     }
 
-    public TypeResponse getTopicType(){
+    public TypeResponse getTopicType() {
         ArrayList<TopicType> topicTypes = (ArrayList<TopicType>) topicTypeMapper.selectList(null);
         return new TypeResponse(HTTPStatus.OK, topicTypes);
     }
 
-    //获取我的导师信息
-    public UserInfoResponse getMyTeacher(String accessToken){
-        Student stu = (Student)redisTemplate.opsForValue().get(accessToken);
 
-        //获取已通过的申请记录
-        ArrayList<Application> app = applicationMapper.getApplicationsOfSIDAndStatus(stu.getSid(),"1");
-        if(app==null) return null;
-
-        //获取所需导师信息
-        Topic topic = topicInfoMapper.getTopic(app.get(0).getTopicId());
-        return new UserInfoResponse(200,teacherMapper.getTeacher(topic.getTid()));
-    }
-
-    //获取所有导师信息
-    public ArrayList<Teacher> getAllTeacher(){
-        return teacherMapper.getAllTeacher();
-    }
-
-    //获得已通过的课题信息
-    public ArrayList<Object> getAllowTopic(String accessToken){
-        Student stu = (Student)redisTemplate.opsForValue().get(accessToken);
-
-        //获取已通过的申请记录
-        ArrayList<Application> app = applicationMapper.getApplicationsOfSIDAndStatus(stu.getSid(),"1");
-        if(app==null) return null;
-
-        //获取所需的课题信息
-        Topic topic = topicInfoMapper.getTopic(app.get(0).getTopicId());
-        TopicType type = topicTypeMapper.getTopicType(topic.getTypeId());
-
-        //添加课题信息
-        ArrayList<Object> response = new ArrayList<Object>();
-        response.add(topic);
-        response.add(type);
-
-        return response;
-    }
-
-    //获取申请记录
-    public ArrayList<Object> getApplicationInfo(String accessToken){
-        Student stu = (Student)redisTemplate.opsForValue().get(accessToken);
-
-        //获取申请记录信息
-        ArrayList<Application> app = applicationMapper.getApplicationsOfSID(stu.getSid());
-        if(app==null) return null;
-        ArrayList<Object> response = new ArrayList<Object>();
-
-        //循环所有申请记录
-        for (int i=0;i<app.size();i++){
-            ArrayList<Object> temp = new ArrayList<Object>();
-            Topic topic = topicInfoMapper.getTopic(app.get(i).getTopicId());
-            Teacher teacher = teacherMapper.getTeacher(topic.getTid());
-            TopicType type = topicTypeMapper.getTopicType(topic.getTypeId());
-
-            //添加单个记录信息
-            temp.add(app.get(i));
-            temp.add(topic);
-            temp.add(teacher);
-            temp.add(type);
-
-            //单个记录信息添加到List
-            response.add(temp);
-        }
-        return response;
-    }
 }
