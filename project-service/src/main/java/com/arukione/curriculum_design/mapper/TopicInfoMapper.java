@@ -1,5 +1,6 @@
 package com.arukione.curriculum_design.mapper;
 
+import com.arukione.curriculum_design.model.VO.SelectableTopicInfo;
 import com.arukione.curriculum_design.model.VO.TopicView;
 import com.arukione.curriculum_design.model.entity.Topic;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -17,4 +18,11 @@ public interface TopicInfoMapper extends BaseMapper<Topic> {
             "topic_info.TypeID=topic_type.TypeID and " +
             "TID=#{tid}")
     ArrayList<TopicView> getTopicN(String tid);
+
+    @Select("select topicName, TName, TypeName, Introduction " +
+            "from topic_info,teacher,topic_type where " +
+            "topic_info.TID=teacher.TID and " +
+            "topic_info.TypeID=topic_type.TypeID and" +
+            "ProfID=#{profId} and SID is null")
+    ArrayList<SelectableTopicInfo> getSelectableTopicInfo(String profId);
 }
