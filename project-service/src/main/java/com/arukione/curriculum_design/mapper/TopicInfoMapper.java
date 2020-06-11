@@ -15,7 +15,7 @@ public interface TopicInfoMapper extends BaseMapper<Topic> {
 
     @Select("select * from topic_info where TopicID=#{topicId}")
     Topic getTopic(String topicId);
-	
+
     @Select("select topic_info.TopicID,TopicName,Introduction,TypeName as Type,SID " +
             "from topic_info,topic_type " +
             "where " +
@@ -23,7 +23,7 @@ public interface TopicInfoMapper extends BaseMapper<Topic> {
             "TID=#{tid}")
     ArrayList<TopicView> getTopicN(String tid);
 
-    @Select("select topicId, topicName, TName, TypeName, Introduction " +
+    @Select("select topicId, topicName, teacher.TID, TName, TypeName, Introduction " +
             "from topic_info,teacher,topic_type where " +
             "topic_info.TID=teacher.TID and " +
             "topic_info.TypeID=topic_type.TypeID and " +

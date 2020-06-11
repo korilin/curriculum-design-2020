@@ -6,18 +6,20 @@
         <Select v-model="applyForm.TID" @on-change="teacherChange">
           <Option
             v-for="teacher in teachers"
-            :value="teacher.TID"
-            :key="teacher.TID"
-          >{{teacher.TName}}</Option>
+            :value="teacher.tid"
+            :key="teacher.tid"
+          >{{teacher.name}}</Option>
         </Select>
       </FormItem>
       <FormItem label="选择课题" prop="TopicID">
         <Select v-model="applyForm.TopicID" @on-change="topicChange">
-          <Option
-            v-for="topic in topics"
-            :value="topic.TopicID"
-            :key="topic.TopicID"
-          >{{topic.TopicName}}</Option>
+          <template v-for="topic in topics">
+            <Option
+              v-if="applyForm.TID!=''&&topic.tid==applyForm.TID"
+              :value="topic.topicId"
+              :key="topic.topicId"
+            >{{topic.topicName}}</Option>
+          </template>
         </Select>
       </FormItem>
       <FormItem>
@@ -40,36 +42,71 @@ export default {
       },
       ApplyRule: {
         TID: [{ required: true, message: "必须选择导师", trigger: "change" }],
-        TopicID: [{required: true, message:"必须选择课题", trigger:"change", type:"number"}]
+        TopicID: [
+          { required: true, message: "必须选择课题", trigger: "change" }
+        ]
       }
     };
   },
   created() {
-    this.teachers = [
-      { TID: "10001", TName: "teacher1" },
-      { TID: "10002", TName: "teacher2" },
-      { TID: "10003", TName: "teacher3" }
-    ];
+    this.axios({
+      method: "get",
+      url: "/getSelectableTopic",
+      params: {
+        accessToken: localStorage.getItem("access_token")
+      }
+    })
+      .then(response => {
+        if (response.data.status == 200)
+          this.topics = response.data.selectableTopicInfos;
+        else if (status == 401) {
+          this.$Message.error(response.data.message);
+          localStorage.removeItem("access_token");
+          this.$router.replace({
+            name: "Login"
+          });
+        } else this.$Message.error(response.data.message);
+      })
+      .catch(error => {
+        this.$Message.error(error.message);
+        console.log(error);
+      });
+
+    this.axios({
+      method: "get",
+      url: "/getSelectableTeacher",
+      params: {
+        accessToken: localStorage.getItem("access_token")
+      }
+    })
+      .then(response => {
+        if (response.data.status == 200) this.teachers = response.data.teachers;
+        else if (status == 401) {
+          this.$Message.error(response.data.message);
+          localStorage.removeItem("access_token");
+          this.$router.replace({
+            name: "Login"
+          });
+        } else this.$Message.error(response.data.message);
+      })
+      .catch(error => {
+        this.$Message.error(error.message);
+        console.log(error);
+      });
   },
   methods: {
     teacherChange: function(TID) {
       this.applyForm.TID = TID;
-
-      this.topics = [
-        { TopicID: 10101, TopicName: "topic1" },
-        { TopicID: 10102, TopicName: "topic2" },
-        { TopicID: 10103, TopicName: "topic3" }
-      ];
     },
     topicChange: function(TopicID) {
       this.applyForm.TopicID = TopicID;
     },
-    applySubmit: function(name){
-        this.$refs[name].validate(valid=>{
-            if(valid){
-                this.$Message.success("已提交申请");
-            }
-        })
+    applySubmit: function(name) {
+      this.$refs[name].validate(valid => {
+        if (valid) {
+          this.$Message.success("已提交申请");
+        }
+      });
     }
   }
 };

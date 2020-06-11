@@ -1,5 +1,6 @@
 package com.arukione.curriculum_design.controller;
 
+import com.arukione.curriculum_design.model.DTO.Response.SelectableTeacherResponse;
 import com.arukione.curriculum_design.model.DTO.Response.SelectableTopicResponse;
 import com.arukione.curriculum_design.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,12 @@ public class StudentController {
 
     @GetMapping("/getSelectableTopic")
     public SelectableTopicResponse getSelectableTopic(@RequestParam("accessToken") String accessToken){
-        return (SelectableTopicResponse) studentService.getAllTopic(accessToken);
+        return studentService.getAllTopic(accessToken);
+    }
+
+    @GetMapping("/getSelectableTeacher")
+    public SelectableTeacherResponse getSelectableTeacher(@RequestParam("accessToken") String accessToken){
+        return studentService.getAllTeacher(accessToken);
     }
 
 }

@@ -101,7 +101,7 @@ export default {
               var status = response.data.status;
               var data = response.data;
               if (status == 204) {
-                this.$Message.success("添加成功")
+                this.$Message.success("添加成功");
               } else if (status == 401) {
                 this.$Message.error(data.message);
                 localStorage.removeItem("access_token");

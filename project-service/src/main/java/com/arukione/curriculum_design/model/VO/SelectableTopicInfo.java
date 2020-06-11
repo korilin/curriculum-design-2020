@@ -6,6 +6,7 @@ import lombok.Data;
 public class SelectableTopicInfo {
     String topicId;
     String topicName;
+    String TID;
     String TName;
     String typeName;
     String introduction;
