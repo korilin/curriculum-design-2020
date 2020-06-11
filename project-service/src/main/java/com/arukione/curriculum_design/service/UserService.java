@@ -23,7 +23,7 @@ public class UserService {
     @Resource
     private RedisTemplate<String, User> redisTemplate;
     final AdminMapper adminMapper;
-    final ApplicationMapper applictionMapper;
+    final ApplicationMapper applicationMapper;
     final StudentMapper studentMapper;
     final TeacherMapper teacherMapper;
     final ProfessionMapper professionMapper;
@@ -31,12 +31,12 @@ public class UserService {
     final TopicTypeMapper topicTypeMapper;
 
     @Autowired
-    UserService(AdminMapper adminMapper,ApplicationMapper applictionMapper,
+    UserService(AdminMapper adminMapper,ApplicationMapper applicationMapper,
                 StudentMapper studentMapper, TeacherMapper teacherMapper,
                 ProfessionMapper professionMapper, TopicInfoMapper topicInfoMapper,
                 TopicTypeMapper topicTypeMapper) {
         this.adminMapper = adminMapper;
-        this.applictionMapper=applictionMapper;
+        this.applicationMapper=applicationMapper;
         this.studentMapper = studentMapper;
         this.teacherMapper = teacherMapper;
         this.professionMapper = professionMapper;
@@ -192,7 +192,7 @@ public class UserService {
         Student stu = (Student)redisTemplate.opsForValue().get(accessToken);
 
         //获取已通过的申请记录
-        ArrayList<Application> app = applictionMapper.getApplicationsOfSIDAndStatus(stu.getSid(),"1");
+        ArrayList<Application> app = applicationMapper.getApplicationsOfSIDAndStatus(stu.getSid(),"1");
         if(app==null) return null;
 
         //获取所需导师信息
@@ -210,7 +210,7 @@ public class UserService {
         Student stu = (Student)redisTemplate.opsForValue().get(accessToken);
 
         //获取已通过的申请记录
-        ArrayList<Application> app = applictionMapper.getApplicationsOfSIDAndStatus(stu.getSid(),"1");
+        ArrayList<Application> app = applicationMapper.getApplicationsOfSIDAndStatus(stu.getSid(),"1");
         if(app==null) return null;
 
         //获取所需的课题信息
@@ -227,10 +227,10 @@ public class UserService {
 
     //获取申请记录
     public ArrayList<Object> getApplicationInfo(String accessToken){
-        //Student stu = (Student)redisTemplate.opsForValue().get(accessToken);
+        Student stu = (Student)redisTemplate.opsForValue().get(accessToken);
 
         //获取申请记录信息
-        ArrayList<Application> app = applictionMapper.getApplicationsOfSID("201835020820");
+        ArrayList<Application> app = applicationMapper.getApplicationsOfSID(stu.getSid());
         if(app==null) return null;
         ArrayList<Object> response = new ArrayList<Object>();
 
