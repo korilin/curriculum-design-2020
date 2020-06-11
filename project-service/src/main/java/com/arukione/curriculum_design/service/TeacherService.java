@@ -15,7 +15,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -78,7 +77,7 @@ public class TeacherService {
                 teacher.setTopicDemand(topicDemand);
                 redisTemplate.opsForValue().set(accessToken, teacher, 1, TimeUnit.DAYS);
             }
-            return userService.updateResult(i);
+            return userService.opsResult(i);
         } catch (PermissionException permissionException) {
             return new Response(HTTPStatus.NotAllowed, Message.USER_PERMISSION_ERROR);
         } catch (NullPointerException npe) {
@@ -101,7 +100,7 @@ public class TeacherService {
                     .typeId(topicInfo.getType())
                     .source("0")
                     .build();
-            return userService.updateResult(topicInfoMapper.insert(topic));
+            return userService.opsResult(topicInfoMapper.insert(topic));
         } catch (PermissionException permissionException) {
             return new Response(HTTPStatus.NotAllowed, Message.USER_PERMISSION_ERROR);
         } catch (NullPointerException npe) {
@@ -174,7 +173,7 @@ public class TeacherService {
             }
             topic.setValue(key, value);
             topic.setTopicId(id);
-            return userService.updateResult(topicInfoMapper.updateById(topic));
+            return userService.opsResult(topicInfoMapper.updateById(topic));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -185,7 +184,7 @@ public class TeacherService {
     public Response deleteTopic(String accessToken, String id){
         Response response = teacherPermission(accessToken);
         if (response != null) return response;
-        return userService.updateResult(topicInfoMapper.deleteById(id));
+        return userService.opsResult(topicInfoMapper.deleteById(id));
     }
 
 }

@@ -104,7 +104,31 @@ export default {
     applySubmit: function(name) {
       this.$refs[name].validate(valid => {
         if (valid) {
-          this.$Message.success("已提交申请");
+          this.axios({
+            method: "post",
+            url: "/applyTeacherTopic",
+            params: {
+              accessToken: localStorage.getItem("access_token"),
+              topicId: this.applyForm.TopicID
+            }
+          })
+            .then(response => {
+              var status = response.data.status;
+              var data = response.data;
+              if (status == 204) {
+                this.$Message.success("申请成功");
+              } else if (status == 401) {
+                this.$Message.error(response.data.message);
+                localStorage.removeItem("access_token");
+                this.$router.replace({
+                  name: "Login"
+                });
+              } else this.$Message.error(data.message);
+            })
+            .catch(error => {
+              this.$Message.error(error.message);
+              console.log(error);
+            });
         }
       });
     }

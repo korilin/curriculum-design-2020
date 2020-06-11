@@ -126,12 +126,38 @@ export default {
       this.applyForm.Type = key;
     },
     applySubmit: function(name) {
-      this.$refs[name].validate((valid, error) => {
+      this.$refs[name].validate(valid => {
         if (valid) {
-          this.$Message.success("已提交申请");
-        }
-        if (error) {
-          console.log(error);
+          this.axios({
+            method: "post",
+            url: "/applyStudentTopic",
+            params: {
+              accessToken: localStorage.getItem("access_token")
+            },
+            data: {
+              topicName: this.applyForm.TopicName,
+              typeId: this.applyForm.Type,
+              introduction: this.applyForm.Introduction,
+              tid: this.applyForm.TID
+            }
+          })
+            .then(response => {
+              var status = response.data.status;
+              var data = response.data;
+              if (status == 204) {
+                console.log();
+              } else if (status == 401) {
+                this.$Message.error(response.data.message);
+                localStorage.removeItem("access_token");
+                this.$router.replace({
+                  name: "Login"
+                });
+              } else this.$Message.error(data.message);
+            })
+            .catch(error => {
+              this.$Message.error(error.message);
+              console.log(error);
+            });
         }
       });
     }

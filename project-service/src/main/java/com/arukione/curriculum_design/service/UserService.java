@@ -138,8 +138,8 @@ public class UserService {
         }
     }
 
-    public Response updateResult(int i){
-       return i==1? new Response(HTTPStatus.Success):new Response(HTTPStatus.Failed, "修改失败");
+    public Response opsResult(int i){
+       return i==1? new Response(HTTPStatus.Success):new Response(HTTPStatus.Failed, Message.DB_NOT_OPERATION);
     }
 
     public Response changePassword(String accessToken, String password) {
@@ -154,19 +154,19 @@ public class UserService {
                     Student studentN = new Student();
                     studentN.setSid(student.getSid());
                     student.setPassword(password);
-                    return updateResult(studentMapper.updateById(studentN));
+                    return opsResult(studentMapper.updateById(studentN));
                 case "Teacher":
                     Teacher teacher = (Teacher) user;
                     Teacher teacherN = new Teacher();
                     teacherN.setTid(teacher.getTid());
                     teacher.setPassword(password);
-                    return updateResult(teacherMapper.updateById(teacherN));
+                    return opsResult(teacherMapper.updateById(teacherN));
                 case "Admin":
                     Admin admin = (Admin) user;
                     Admin adminN = new Admin();
                     adminN.setAdminId(admin.getAdminId());
                     adminN.setPassword(password);
-                    return updateResult(adminMapper.updateById(adminN));
+                    return opsResult(adminMapper.updateById(adminN));
                 default: throw new Exception("Error");
             }
         }catch (Exception e){
