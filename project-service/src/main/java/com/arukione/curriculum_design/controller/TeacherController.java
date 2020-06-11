@@ -35,7 +35,7 @@ public class TeacherController {
 
     //获取未处理申请数据
     @GetMapping("getStudentApply")
-    public ArrayList<Object> getStudentApply(@RequestParam("index") String status){
+    public ArrayList<Object> getStudentApply(@RequestParam("status") String status){
         return teacherService.getStudentApply(status);
     }
 
