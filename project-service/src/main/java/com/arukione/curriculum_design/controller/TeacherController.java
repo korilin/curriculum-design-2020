@@ -2,6 +2,7 @@ package com.arukione.curriculum_design.controller;
 
 import com.arukione.curriculum_design.model.DTO.Request.TopicInfo;
 import com.arukione.curriculum_design.model.DTO.Response.Response;
+import com.arukione.curriculum_design.model.DTO.Response.TopicTResponse;
 import com.arukione.curriculum_design.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -38,4 +39,21 @@ public class TeacherController {
         return teacherService.getStudentApply();
     }
 
+    @GetMapping("getTeacherTopic")
+    public TopicTResponse getTeacherTopic(@RequestParam("accessToken") String accessToken){
+        return (TopicTResponse) teacherService.getTopicT(accessToken);
+    }
+
+    @PostMapping("changeTopicInfo")
+    public Response changeTopicInfo(@RequestParam("accessToken") String accessToken,
+                                    @RequestParam("key") String key,
+                                    @RequestParam("value") String value,
+                                    @RequestParam("topicID") String id){
+        return teacherService.changeTopicInfo(accessToken, key, value, id);
+    }
+
+    @DeleteMapping("deleteTeacherTopic")
+    public Response deleteTeacherTopic(@RequestParam("accessToken") String accessToken, @RequestParam("topicID") String id){
+        return teacherService.deleteTopic(accessToken, id);
+    }
 }
