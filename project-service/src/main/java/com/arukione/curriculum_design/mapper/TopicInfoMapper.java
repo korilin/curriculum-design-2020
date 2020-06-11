@@ -23,10 +23,10 @@ public interface TopicInfoMapper extends BaseMapper<Topic> {
             "TID=#{tid}")
     ArrayList<TopicView> getTopicN(String tid);
 
-    @Select("select topicName, TName, TypeName, Introduction " +
+    @Select("select topicId, topicName, TName, TypeName, Introduction " +
             "from topic_info,teacher,topic_type where " +
             "topic_info.TID=teacher.TID and " +
-            "topic_info.TypeID=topic_type.TypeID and" +
-            "ProfID=#{profId} and SID is null")
+            "topic_info.TypeID=topic_type.TypeID and " +
+            "GuideProfID=#{profId} and SID is null")
     ArrayList<SelectableTopicInfo> getSelectableTopicInfo(String profId);
 }

@@ -32,7 +32,7 @@ public class StudentService {
 
     Response teacherPermission(String accessToken) {
         try {
-            userService.permission(accessToken, "Teacher");
+            userService.permission(accessToken, "Student");
             return null;
         } catch (PermissionException permissionException) {
             return new Response(HTTPStatus.NotAllowed, Message.USER_PERMISSION_ERROR);
@@ -41,16 +41,16 @@ public class StudentService {
         }
     }
 
-    public Response getAllTopic(String accessToken){
+    public SelectableTopicResponse getAllTopic(String accessToken){
         try {
-            Student student = (Student) userService.permission(accessToken, "Teacher");
+            Student student = (Student) userService.permission(accessToken, "Student");
             String profId = student.getProfessionId();
             ArrayList<SelectableTopicInfo> selectableTopicInfos = topicInfoMapper.getSelectableTopicInfo(profId);
             return new SelectableTopicResponse(HTTPStatus.OK,selectableTopicInfos);
         } catch (PermissionException permissionException) {
-            return new Response(HTTPStatus.NotAllowed, Message.USER_PERMISSION_ERROR);
+            return new SelectableTopicResponse(HTTPStatus.NotAllowed, Message.USER_PERMISSION_ERROR);
         } catch (NullPointerException npe) {
-            return new Response(HTTPStatus.Unauthorized, Message.NO_LOGIN_STATUS);
+            return new SelectableTopicResponse(HTTPStatus.Unauthorized, Message.NO_LOGIN_STATUS);
         }
     }
 

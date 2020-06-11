@@ -16,10 +16,10 @@ public class NewTeacher {
     String accessToken;
 
     public Teacher convertTeacher(){
-        position = position.equals("") ?"无":"";
-        rank = rank.equals("") ?"无":"";
-        phone = phone.equals("") ?"无":"";
-        email = email.equals("") ?"无":"";
+        position = position.equals("") ?"无":position;
+        rank = rank.equals("") ?"无":rank;
+        phone = phone.equals("") ?"无":phone;
+        email = email.equals("") ?"无":email;
         return Teacher.builder()
                 .tid(tid)
                 .name(name)

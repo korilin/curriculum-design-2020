@@ -112,7 +112,7 @@ export default {
       }
     })
       .then(response => {
-        if (response.data.status == 200) this.topicList = response.data.topicTS;
+        if (response.data.status == 200) this.topicList = response.data.topicViews;
         else this.$Message.error("课题获取失败");
       })
       .catch(error => {
