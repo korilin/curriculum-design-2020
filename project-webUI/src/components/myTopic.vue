@@ -42,7 +42,8 @@ export default {
       }
     })
       .then(response => {
-        if (response.data.status == 200) this.teachers = response.data.teachers;
+        var status = response.data.status;
+        if (status == 200) this.teachers = response.data.teachers;
         else if (status == 401) {
           this.$Message.error(response.data.message);
           localStorage.removeItem("access_token");
@@ -56,7 +57,6 @@ export default {
         console.log(error);
       });
     this.topicInfo = {
-
       TopicName: "毕业设计选题系统",
       TName: "老师一",
       Type: "应用（实验）研究类",
