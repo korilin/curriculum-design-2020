@@ -3,6 +3,7 @@ package com.arukione.curriculum_design.controller;
 import com.arukione.curriculum_design.model.DTO.Request.LoginRequest;
 import com.arukione.curriculum_design.model.DTO.Response.*;
 import com.arukione.curriculum_design.model.entity.Profession;
+import com.arukione.curriculum_design.model.entity.Teacher;
 import com.arukione.curriculum_design.service.UserService;
 import com.arukione.curriculum_design.utils.HTTPStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,4 +71,27 @@ public class UserController {
        return userService.getTopicType();
     }
 
+    //获得我的导师信息
+    @PostMapping("getMyTeacher")
+    public UserInfoResponse getMyTeacher(@RequestParam("accessToken") String accessToken){
+        return userService.getMyTeacher(accessToken);
+    }
+
+    //获取所有导师信息
+    @GetMapping("getAllTeacher")
+    public ArrayList<Teacher> getAllTeacher(){
+        return userService.getAllTeacher();
+    }
+
+    //获取已通过课题
+    @PostMapping("getAllowTopic")
+    public ArrayList<Object> getAllowTopic(@RequestParam("accessToken") String accessToken){
+        return userService.getAllowTopic(accessToken);
+    }
+
+    //获取申请记录
+    @PostMapping("getApplicationInfo")
+    public ArrayList<Object> getApplicationInfo(@RequestParam("accessToken") String accessToken){
+        return userService.getApplicationInfo(accessToken);
+    }
 }
