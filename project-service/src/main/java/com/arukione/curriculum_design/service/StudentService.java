@@ -181,10 +181,15 @@ public class StudentService {
 
     //获取申请记录
     public ArrayList<Object> getApplicationInfo(String accessToken) {
-        //Student stu = (Student)redisTemplate.opsForValue().get(accessToken);
-
+        Student stu= null;
+        try {
+            stu = (Student) userService.permission(accessToken, "Student");
+        } catch (PermissionException e) {
+            e.printStackTrace();
+            return null;
+        }
         //获取申请记录信息
-        ArrayList<Application> app = applicationMapper.getApplicationsOfSID("201835020820");
+        ArrayList<Application> app = applicationMapper.getApplicationsOfSID(stu.getSid());
         if (app == null) return null;
         ArrayList<Object> response = new ArrayList<Object>();
         //循环所有申请记录

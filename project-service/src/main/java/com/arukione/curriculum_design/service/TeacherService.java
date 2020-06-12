@@ -4,8 +4,10 @@ import com.arukione.curriculum_design.exception.PermissionException;
 
 import com.arukione.curriculum_design.mapper.*;
 import com.arukione.curriculum_design.model.DTO.Request.TopicInfo;
-import com.arukione.curriculum_design.model.DTO.Response.Response;
-import com.arukione.curriculum_design.model.DTO.Response.TopicTResponse;
+import com.arukione.curriculum_design.model.DTO.Response.*;
+import com.arukione.curriculum_design.model.VO.ApplicationStatusInfo;
+import com.arukione.curriculum_design.model.VO.GuideStudentInfo;
+import com.arukione.curriculum_design.model.VO.StudentApplication;
 import com.arukione.curriculum_design.model.VO.TopicView;
 import com.arukione.curriculum_design.model.entity.*;
 import com.arukione.curriculum_design.utils.Generator;
@@ -111,7 +113,7 @@ public class TeacherService {
     public ArrayList<Object> getStudentApply(String status) {
         ArrayList<Object> response = new ArrayList<Object>();
 
-        //获取所有未处理申请数据的学生id与课题id及时间
+        //获取所有申请数据的学生id与课题id及时间
         ArrayList<Application> apps = applicationMapper.getApplicationsOfStatus(status);
 
         //循环获取所有详细信息
@@ -187,4 +189,46 @@ public class TeacherService {
         return userService.opsResult(topicInfoMapper.deleteById(id));
     }
 
+    //获取指导学生信息
+    public Response getGuideStudentInfo(String accessToken){
+        try {
+            Teacher teacher = (Teacher) userService.permission(accessToken, "Teacher");
+            String tid = teacher.getTid();
+            ArrayList<GuideStudentInfo> gsInfo= studentMapper.getGuideStudentInfo(tid);
+            return new GuideStudentInfoResponse(200,gsInfo);
+        } catch (PermissionException permissionException) {
+            return new Response(HTTPStatus.NotAllowed, Message.USER_PERMISSION_ERROR);
+        } catch (NullPointerException npe) {
+            return new Response(HTTPStatus.Unauthorized, Message.NO_LOGIN_STATUS);
+        }
+    }
+
+
+    //获取申请处理记录
+    public Response getApplicationStatus(String accessToken){
+        try {
+            Teacher teacher = (Teacher) userService.permission(accessToken, "Teacher");
+            String tid = teacher.getTid();
+            ArrayList<ApplicationStatusInfo> asInfo= studentMapper.getApplicationStatusInfo(tid);
+            return new ApplicationStatusInfoResponse(200,asInfo);
+        } catch (PermissionException permissionException) {
+            return new Response(HTTPStatus.NotAllowed, Message.USER_PERMISSION_ERROR);
+        } catch (NullPointerException npe) {
+            return new Response(HTTPStatus.Unauthorized, Message.NO_LOGIN_STATUS);
+        }
+    }
+
+    //获取未处理的学生申请
+    public Response getStudentApplication(String accessToken){
+        try {
+            Teacher teacher = (Teacher) userService.permission(accessToken, "Teacher");
+            String tid = teacher.getTid();
+            ArrayList<StudentApplication> saInfo= studentMapper.getStudentApplication(tid);
+            return new StudentApplicationResponse(200,saInfo);
+        } catch (PermissionException permissionException) {
+            return new Response(HTTPStatus.NotAllowed, Message.USER_PERMISSION_ERROR);
+        } catch (NullPointerException npe) {
+            return new Response(HTTPStatus.Unauthorized, Message.NO_LOGIN_STATUS);
+        }
+    }
 }

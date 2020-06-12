@@ -56,4 +56,22 @@ public class TeacherController {
     public Response deleteTeacherTopic(@RequestParam("accessToken") String accessToken, @RequestParam("topicID") String id){
         return teacherService.deleteTopic(accessToken, id);
     }
+
+    //获取指导学生信息
+    @PostMapping("getGuideStudentInfo")
+    public Response getGuideStudentInfo(@RequestParam("accessToken") String accessToken){
+        return teacherService.getGuideStudentInfo(accessToken);
+    }
+
+    //获取申请处理记录
+    @PostMapping("getApplicationStatus")
+    public Response getApplicationStatus(@RequestParam("accessToken") String accessToken){
+        return teacherService.getApplicationStatus(accessToken);
+    }
+
+    //获取未处理的学生申请记录
+    @PostMapping("getStudentApplication")
+    public Response getStudentApplication(@RequestParam("accessToken") String accessToken){
+        return teacherService.getStudentApplication(accessToken);
+    }
 }
