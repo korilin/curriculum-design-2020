@@ -1,6 +1,9 @@
 <template>
-  <div v-if="topicInfo==null">
-    <h1>您还没有申请通过的课题，赶紧去申请课题吧！</h1>
+  <div v-if="topicInfo==0">
+    <h1></h1>
+  </div>
+  <div v-else-if="topicInfo==null">
+    <h1>您还没有通过申请的课题，赶紧去申请课题吧！</h1>
   </div>
   <div v-else class="topic">
     <h1 style="color:#19be6b">已通过课题</h1>
@@ -30,7 +33,7 @@ export default {
   name: "MyTopic",
   data() {
     return {
-      topicInfo: {}
+      topicInfo: 0
     };
   },
   created() {
@@ -43,26 +46,21 @@ export default {
     })
       .then(response => {
         var status = response.data.status;
-        if (status == 200) this.teachers = response.data.teachers;
+        if (status == 200) this.topicInfo = response.data.topicInfo;
         else if (status == 401) {
           this.$Message.error(response.data.message);
           localStorage.removeItem("access_token");
           this.$router.replace({
             name: "Login"
           });
-        } else this.$Message.error(response.data.message);
+        }
+        if (status == 406) this.topicInfo = null;
+        else this.$Message.error(response.data.message);
       })
       .catch(error => {
         this.$Message.error(error.message);
         console.log(error);
       });
-    this.topicInfo = {
-      TopicName: "毕业设计选题系统",
-      TName: "老师一",
-      Type: "应用（实验）研究类",
-      Introduction:
-        "外模式(External Schema): 处于用户级、三级模式结构的最外层, 又称为子模式(External Schema)或用户模式(Subschema), 能被数据库用户看到并使用的那部分数据的逻辑结构和特征的描述, 也是数据库用户的数据视图(用户视图)。外模式是逻辑模式的某一部分的抽象表示, 一个数据库可以有多个外模式, 不同用户对应的外模式的描述可能不同, 同一外模式也可以被多个应用系统使用。"
-    };
   }
 };
 </script>

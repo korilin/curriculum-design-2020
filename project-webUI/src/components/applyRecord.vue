@@ -11,11 +11,11 @@
     </ListItem>
     <ListItem v-for="(info,index) in applyRecord" :key="index">
       <Row class="row">
-        <Col span="5">{{info.TopicName}}</Col>
-        <Col span="5">{{applyType[info.TopicSource]}}</Col>
-        <Col span="5">{{info.TName}}</Col>
-        <Col span="5">{{info.ApplyTime}}</Col>
-        <Col span="4" :class="'status' + info.Status">{{status[info.Status]}}</Col>
+        <Col span="5">{{info.topicInfo.topicName}}</Col>
+        <Col span="5">{{applyType[info.topicInfo.source]}}</Col>
+        <Col span="5">{{info.teacherName}}</Col>
+        <Col span="5">{{info.applyInfo.applyTime}}</Col>
+        <Col span="4" :class="'status' + info.applyInfo.status">{{status[info.applyInfo.status]}}</Col>
       </Row>
     </ListItem>
   </List>
@@ -41,43 +41,30 @@ export default {
     };
   },
   created() {
-    this.applyRecord = [
-        {
-        TopicName: "毕业设计选题系统",
-        TopicSource: 0,
-        TName: "导师一",
-        ApplyTime: "2020-5-25 1:05",
-        Status: 0
-      },
-      {
-        TopicName: "毕业设计选题系统",
-        TopicSource: 0,
-        TName: "导师一",
-        ApplyTime: "2020-5-25 1:05",
-        Status: 1
-      },
-      {
-        TopicName: "毕业设计选题系统",
-        TopicSource: 1,
-        TName: "导师二",
-        ApplyTime: "2020-5-25 1:05",
-        Status: 2
-      },
-      {
-        TopicName: "毕业设计选题系统",
-        TopicSource: 0,
-        TName: "导师三",
-        ApplyTime: "2020-5-25 1:05",
-        Status: 3
-      },
-      {
-        TopicName: "毕业设计选题系统",
-        TopicSource: 0,
-        TName: "导师四",
-        ApplyTime: "2020-5-25 1:05",
-        Status: 4
+    this.axios({
+      method: "get",
+      url: "/getApplyRecord",
+      params: {
+        accessToken: localStorage.getItem("access_token")
       }
-    ];
+    })
+      .then(response => {
+        var status = response.data.status;
+        console.log(response.data);
+        if (status == 200) this.applyRecord = response.data.applyRecord;
+        else if (status == 401) {
+          this.$Message.error(response.data.message);
+          localStorage.removeItem("access_token");
+          this.$router.replace({
+            name: "Login"
+          });
+        } else if (status == 406) this.applyRecord = [];
+        else this.$Message.error(response.data.message);
+      })
+      .catch(error => {
+        this.$Message.error(error.message);
+        console.log(error);
+      });
   }
 };
 </script>
