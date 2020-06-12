@@ -43,27 +43,21 @@ public class StudentController {
         return studentService.addApply(accessToken, tid, topicInfo);
     }
 
-    //获得我的导师信息
+    //获得我的导师信息 √
     @GetMapping("getMyTeacher")
     public UserInfoResponse getMyTeacher(@RequestParam("accessToken") String accessToken) {
         return studentService.getMyTeacher(accessToken);
     }
 
-    //获取所有导师信息
-    @GetMapping("getAllTeacher")
-    public ArrayList<Teacher> getAllTeacher() {
-        return studentService.getAllTeacher();
-    }
-
-    //获取已通过课题
+    //获取已通过课题 √
     @GetMapping("getAllowTopic")
     public Map<String, Object> getAllowTopic(@RequestParam("accessToken") String accessToken) {
         return studentService.getAllowTopic(accessToken);
     }
 
     //获取申请记录
-    @PostMapping("getApplicationInfo")
-    public ArrayList<Object> getApplicationInfo(@RequestParam("accessToken") String accessToken) {
+    @GetMapping("getApplyRecord")
+    public Map<String, Object> getApplicationInfo(@RequestParam("accessToken") String accessToken) {
         return studentService.getApplicationInfo(accessToken);
     }
 }

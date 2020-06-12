@@ -25,7 +25,7 @@ public class TeacherController {
                                @RequestParam("phone")String phone,
                                @RequestParam("email")String email,
                                @RequestParam("topicDemand") String topicDemand){
-        return teacherService.changeInfo(accessToken, phone, email, topicDemand);
+        return teacherService.changeInfo(accessToken, phone,  email, topicDemand);
     }
 
     @PostMapping("addTopic")

@@ -108,7 +108,7 @@ public class StudentService {
                     .typeId(topicInfo.getTypeId())
                     .source("1")
                     .build();
-            if (topicInfoMapper.insert(topic) != 1) return new Response(HTTPStatus.Failed, Message.DB_NOT_OPERATION);
+            if (topicInfoMapper.insert(topic) != 1) return new Response(HTTPStatus.Failed, Message.DB_NO_DATA);
             return getApplyResult(student, topicId);
         } catch (PermissionException permissionException) {
             return new Response(HTTPStatus.NotAllowed, Message.USER_PERMISSION_ERROR);
@@ -136,7 +136,7 @@ public class StudentService {
             QueryWrapper<Topic> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("SID", stu.getSid());
             List<Topic> topics = topicInfoMapper.selectList(queryWrapper);
-            if(topics == null || topics.size()==0) return new UserInfoResponse(HTTPStatus.Failed, "null");
+            if(topics == null || topics.size()==0) return new UserInfoResponse(HTTPStatus.Failed, Message.DB_NO_DATA);
             return new UserInfoResponse(200, teacherMapper.selectById(topics.get(0).getTid()));
         } catch (PermissionException permissionException) {
             return new UserInfoResponse(HTTPStatus.NotAllowed, Message.USER_PERMISSION_ERROR);
@@ -144,11 +144,6 @@ public class StudentService {
             return new UserInfoResponse(HTTPStatus.Unauthorized, Message.NO_LOGIN_STATUS);
         }
 
-    }
-
-    //获取所有导师信息
-    public ArrayList<Teacher> getAllTeacher() {
-        return teacherMapper.getAllTeacher();
     }
 
     //获得已通过的课题信息
@@ -161,10 +156,12 @@ public class StudentService {
             List<Topic> topics = topicInfoMapper.selectList(queryWrapper);
             if(topics==null || topics.size()==0){
                 response.put("status", HTTPStatus.Failed);
+                response.put("message","没有获取到数据");
                 return response;
             }
             Topic topic = topics.get(0);
             TopicType type = topicTypeMapper.getTopicType(topic.getTypeId());
+            response.put("status", HTTPStatus.OK);
             response.put("topic",topic);
             response.put("type",type);
             return response;
@@ -180,28 +177,36 @@ public class StudentService {
     }
 
     //获取申请记录
-    public ArrayList<Object> getApplicationInfo(String accessToken) {
-        //Student stu = (Student)redisTemplate.opsForValue().get(accessToken);
-
-        //获取申请记录信息
-        ArrayList<Application> app = applicationMapper.getApplicationsOfSID("201835020820");
-        if (app == null) return null;
-        ArrayList<Object> response = new ArrayList<Object>();
-        //循环所有申请记录
-        for (Application application : app) {
-            ArrayList<Object> temp = new ArrayList<>();
-            Topic topic = topicInfoMapper.getTopic(application.getTopicId());
-            Teacher teacher = teacherMapper.getTeacher(topic.getTid());
-            TopicType type = topicTypeMapper.getTopicType(topic.getTypeId());
-            //添加单个记录信息
-            temp.add(application);
-            temp.add(topic);
-            temp.add(teacher);
-            temp.add(type);
-
-            //单个记录信息添加到List
-            response.add(temp);
+    public Map<String, Object> getApplicationInfo(String accessToken) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Student stu = (Student) userService.permission(accessToken, "Student");
+            ArrayList<Application> applies = applicationMapper.getApplicationsOfSID(stu.getSid());
+            if (applies == null || applies.size()==0) {
+                response.put("status", HTTPStatus.Failed);
+                response.put("message","没有获取到数据");
+                return response;
+            }
+            ArrayList<Object> mapData =new ArrayList<>();
+            for (Application apply : applies) {
+                Map<String, Object> data = new HashMap<>();
+                Topic topic =  topicInfoMapper.selectById(apply.getTopicId());
+                data.put("topicInfo", topic);
+                data.put("teacherName", teacherMapper.selectById(topic.getTid()).getName());
+                data.put("applyInfo", apply);
+                mapData.add(data);
+            }
+            response.put("status", HTTPStatus.OK);
+            response.put("applyRecord", mapData);
+            return response;
+        } catch (PermissionException permissionException) {
+            response.put("status", HTTPStatus.NotAllowed);
+            response.put("message",Message.USER_PERMISSION_ERROR);
+            return response;
+        } catch (NullPointerException npe) {
+            response.put("status", HTTPStatus.Unauthorized);
+            response.put("message",Message.NO_LOGIN_STATUS);
+            return response;
         }
-        return response;
     }
 }

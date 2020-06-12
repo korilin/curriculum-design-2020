@@ -1,5 +1,8 @@
 <template>
-  <div v-if="teacherInfo==null">
+  <div v-if="topicInfo==0">
+    <h1></h1>
+  </div>
+  <div v-else-if="teacherInfo==null">
     <h1>您还没有导师，赶紧去寻找导师吧！</h1>
   </div>
   <div v-else class="topic">
@@ -7,23 +10,23 @@
       <div style="color:#2db7f5;font-size:24px;font-weight:bold;text-align:center" slot="title">我的导师</div>
       <div class="info">
         <span class="label">名称：</span>
-        <span class="content">{{teacherInfo.TName}}</span>
+        <span class="content">{{teacherInfo.name}}</span>
       </div>
       <div class="info">
         <span class="label">职位：</span>
-        <span class="content">{{teacherInfo.Position}}</span>
+        <span class="content">{{teacherInfo.position}}</span>
       </div>
       <div class="info">
         <span class="label">职称：</span>
-        <span class="content">{{teacherInfo.Rank}}</span>
+        <span class="content">{{teacherInfo.trank}}</span>
       </div>
       <div class="info">
         <span class="label">电话：</span>
-        <span class="content">{{teacherInfo.Phone}}</span>
+        <span class="content">{{teacherInfo.phone}}</span>
       </div>
       <div class="info">
         <span class="label">邮箱：</span>
-        <span class="content">{{teacherInfo.Email}}</span>
+        <span class="content">{{teacherInfo.email}}</span>
       </div>
     </Card>
   </div>
@@ -34,17 +37,34 @@ export default {
   name: "MyTeacher",
   data() {
     return {
-      teacherInfo: {}
+      teacherInfo: 0
     };
   },
   created: function() {
-    this.teacherInfo = {
-      TName: "导师一",
-      Position: "教研室主任",
-      Rank: "教授",
-      Phone: "12345678900",
-      Email: "123456@qq.com"
-    };
+    this.axios({
+      method: "get",
+      url: "/getMyTeacher",
+      params: {
+        accessToken: localStorage.getItem("access_token")
+      }
+    })
+      .then(response => {
+        var status = response.data.status;
+        console.log(response.data);
+        if (status == 200 || status == 406)
+          this.teacherInfo = response.data.teacherInfo;
+        else if (status == 401) {
+          this.$Message.error(response.data.message);
+          localStorage.removeItem("access_token");
+          this.$router.replace({
+            name: "Login"
+          });
+        } else this.$Message.error(response.data.message);
+      })
+      .catch(error => {
+        this.$Message.error(error.message);
+        console.log(error);
+      });
   }
 };
 </script>
