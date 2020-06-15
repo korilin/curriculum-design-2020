@@ -195,7 +195,7 @@
           </Select>
         </div>
         <div v-if="tabstatus=='Teacher'">
-          <h2>
+          <h2 v-if="showInfoModal">
             修改导师账号信息
             <br />
             {{teacherList[paneSelect].tid}}

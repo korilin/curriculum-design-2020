@@ -22,7 +22,7 @@
               type="success"
               size="small"
               class="opButton"
-              @click="accept(info.sid, info.topicID, info.sname, info.topicName, index)"
+              @click="accept(info.sid, info.topicID, info.sname, info.topicName)"
             >同意</Button>
             <Button
               type="error"
@@ -115,7 +115,7 @@ export default {
       this.tabStatus = "0";
       this.showInfoModal = false;
     },
-    accept: function(SID, TopicID, SName, TopicName, index) {
+    accept: function(SID, TopicID, SName, TopicName) {
       this.$Modal.confirm({
         title: "是否接受“" + SName + "”对课题”" + TopicName + "“的申请?",
         onOk: () => {
@@ -135,7 +135,32 @@ export default {
               var status = response.data.status;
               var data = response.data;
               if (status == 204) {
-                this.applicationInfo.splice(index, 1);
+                this.axios({
+                  method: "get",
+                  url: "/getStudentApply",
+                  params: {
+                    accessToken: localStorage.getItem("access_token")
+                  }
+                })
+                  .then(response => {
+                    var status = response.data.status;
+                    console.log(response.data);
+                    if (status == 200)
+                      this.applicationInfo =
+                        response.data.studentApplicationList;
+                    else if (status == 401) {
+                      this.$Message.error(response.data.message);
+                      localStorage.removeItem("access_token");
+                      this.$router.replace({
+                        name: "Login"
+                      });
+                    } else if (status == 406) this.applicationInfo = [];
+                    else this.$Message.error(response.data.message);
+                  })
+                  .catch(error => {
+                    this.$Message.error(error.message);
+                    console.log(error);
+                  });
                 this.$Message.success("已同意");
               } else if (status == 401) {
                 this.$Message.error(response.data.message);

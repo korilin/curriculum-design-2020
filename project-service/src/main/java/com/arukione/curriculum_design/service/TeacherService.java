@@ -157,6 +157,9 @@ public class TeacherService {
     public Response deleteTopic(String accessToken, String id) {
         Response response = teacherPermission(accessToken);
         if (response != null) return response;
+        QueryWrapper<Application> applicationQueryWrapper = new QueryWrapper<>();
+        applicationQueryWrapper.eq("TopicID",id);
+        applicationMapper.delete(applicationQueryWrapper);
         return userService.opsResult(topicInfoMapper.deleteById(id));
     }
 

@@ -11,8 +11,6 @@ import java.util.ArrayList;
 public class GuideStudentInfoResponse extends Response{
     ArrayList<GuideStudentInfo> guideStudentInfoList;
 
-    public GuideStudentInfoResponse(int status, String mes){super(status, mes);}
-
     public GuideStudentInfoResponse(int status,ArrayList<GuideStudentInfo> guideStudentInfoList){
         super(status);
         this.guideStudentInfoList=guideStudentInfoList;

@@ -135,6 +135,7 @@ export default {
     deleteTopic: function(topicID, index) {
       this.$Modal.confirm({
         title: "确认删除课题：" + topicID,
+        content: "删除课题将会删除与该课题相关的申请记录，以及通过该课题申请的学生将会失去课题，是否继续删除课题？",
         loading: true,
         onOk: () => {
           this.axios({

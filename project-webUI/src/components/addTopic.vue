@@ -93,7 +93,7 @@ export default {
             },
             data: {
               topicName: this.topicInfo.TopicName,
-              type: this.topicInfo.Type,
+              typeId: this.topicInfo.Type,
               introduction: this.topicInfo.Introduction
             }
           })
