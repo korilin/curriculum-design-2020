@@ -1,5 +1,6 @@
 package com.arukione.curriculum_design.controller;
 
+import com.arukione.curriculum_design.model.DTO.Request.ApplyManage;
 import com.arukione.curriculum_design.model.DTO.Request.TopicInfo;
 import com.arukione.curriculum_design.model.DTO.Response.Response;
 import com.arukione.curriculum_design.model.DTO.Response.TopicTResponse;
@@ -33,12 +34,6 @@ public class TeacherController {
         return teacherService.addTopic(accessToken, topicInfo);
     }
 
-    //获取未处理申请数据
-    @GetMapping("getStudentApply")
-    public ArrayList<Object> getStudentApply(@RequestParam("status") String status){
-        return teacherService.getStudentApply(status);
-    }
-
     @GetMapping("getTeacherTopic")
     public TopicTResponse getTeacherTopic(@RequestParam("accessToken") String accessToken){
         return (TopicTResponse) teacherService.getTopicT(accessToken);
@@ -58,20 +53,25 @@ public class TeacherController {
     }
 
     //获取指导学生信息
-    @PostMapping("getGuideStudentInfo")
+    @GetMapping("getGuideStudentInfo")
     public Response getGuideStudentInfo(@RequestParam("accessToken") String accessToken){
         return teacherService.getGuideStudentInfo(accessToken);
     }
 
-    //获取申请处理记录
-    @PostMapping("getApplicationStatus")
+    //获取申请处理记录 √
+    @GetMapping("getApplicationStatus")
     public Response getApplicationStatus(@RequestParam("accessToken") String accessToken){
         return teacherService.getApplicationStatus(accessToken);
     }
 
-    //获取未处理的学生申请记录
-    @PostMapping("getStudentApplication")
+    //获取未处理的学生申请记录 √
+    @GetMapping("getStudentApply")
     public Response getStudentApplication(@RequestParam("accessToken") String accessToken){
         return teacherService.getStudentApplication(accessToken);
+    }
+
+    @PostMapping("applyManage")
+    public Response applyManage(@RequestParam("accessToken") String accessToken, @RequestBody ApplyManage applyManage){
+        return teacherService.applyManage(accessToken, applyManage.getSid(), applyManage.getTopicId(), applyManage.getStatus());
     }
 }

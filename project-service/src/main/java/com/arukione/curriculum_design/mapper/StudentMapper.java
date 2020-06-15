@@ -31,22 +31,20 @@ public interface StudentMapper extends BaseMapper<Student> {
     ArrayList<GuideStudentInfo> getGuideStudentInfo(String tid);
 
     //获取申请处理记录
-    @Select("select topic.TopicName,type.TypeName,s.SName,app.ApplyTime,app.`Status` " +
-            "from topic_info topic,topic_type type,application app,student s " +
-            "where topic.TID=#{tid} and topic.TypeID=type.TypeID " +
-            "and topic.TopicID=app.TopicID and topic.SID=app.SID " +
-            "and topic.SID=s.SID")
+    @Select("select topic.TopicName,student.SName,application.ApplyTime,application.`Status`,Source " +
+            "from topic_info topic,application,student " +
+            "where topic.TID=#{tid} and Status!='0'" +
+            "and topic.TopicID=application.TopicID and student.SID=application.SID ")
     ArrayList<ApplicationStatusInfo> getApplicationStatusInfo(String tid);
 
     //获取未处理的学生申请
-    @Select("select topic.TopicName,topic.Source,s.SName,app.ApplyTime," +
-            "topic.TopicID,type.TypeName,topic.Introduction," +
-            "s.SID,pro.ProfName,s.ClassNumber " +
-            "from topic_info topic,topic_type type,application app," +
-            "student s,profession pro " +
+    @Select("select topic.TopicName,topic.Source,topic.TopicID,type.TypeName,topic.Introduction," +
+            "student.SName,student.SID,profession.ProfName,student.ClassNumber," +
+            "application.ApplyTime " +
+            "from topic_info topic,topic_type type,application,student,profession " +
             "where topic.TID=#{tid} and topic.TypeID=type.TypeID " +
-            "and topic.TopicID=app.TopicID and topic.SID=app.SID " +
-            "and topic.SID=s.SID and s.ProfID=pro.ProfID " +
-            "and app.`Status`='0'")
+            "and topic.TopicID=application.TopicID and application.SID=student.SID " +
+            "and student.ProfID=profession.ProfID " +
+            "and Status='0'")
     ArrayList<StudentApplication> getStudentApplication(String tid);
 }

@@ -55,7 +55,7 @@ public class StudentController {
         return studentService.getAllowTopic(accessToken);
     }
 
-    //获取申请记录
+    //获取申请记录 √
     @GetMapping("getApplyRecord")
     public Map<String, Object> getApplicationInfo(@RequestParam("accessToken") String accessToken) {
         return studentService.getApplicationInfo(accessToken);

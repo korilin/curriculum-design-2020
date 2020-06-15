@@ -83,33 +83,56 @@ public class StudentService {
     }
 
     public Response addApply(String accessToken, String topicId) {
-        try {
-            Student student = (Student) userService.permission(accessToken, "Student");
-            return getApplyResult(student, topicId);
-        } catch (PermissionException permissionException) {
-            return new Response(HTTPStatus.NotAllowed, Message.USER_PERMISSION_ERROR);
-        } catch (NullPointerException npe) {
-            return new Response(HTTPStatus.Unauthorized, Message.NO_LOGIN_STATUS);
-        } catch (Exception e) {
-            if (e.getMessage().contains("for key 'PRIMARY'")) return new Response(HTTPStatus.Failed, "无法再次申请此课题");
-            return new Response(HTTPStatus.Failed, e.getMessage());
-        }
+            Response response = canApply(accessToken);
+            if(response.getStatus()!=200) return response;
+            String sid = response.getMessage();
+            try {
+                return getApplyResult(sid, topicId);
+            }catch (Exception e){
+                if(e.getMessage().contains("for key 'PRIMARY'"))
+                    return new Response(HTTPStatus.Failed, "不能再次申请该课题");
+                else{
+                    e.printStackTrace();
+                    return new Response(HTTPStatus.Failed, e.getMessage());
+                }
+            }
     }
 
     public Response addApply(String accessToken, String tid, TopicInfo topicInfo) {
-        try {
-            Student student = (Student) userService.permission(accessToken, "Student");
+            Response response = canApply(accessToken);
+            if(response.getStatus()!=200) return response;
+            String sid = response.getMessage();
             String topicId = Generator.generateTopicID();
             Topic topic = Topic.builder()
                     .topicId(topicId)
                     .topicName(topicInfo.getTopicName())
                     .introduction(topicInfo.getIntroduction())
                     .tid(tid)
+                    .sid(sid)
                     .typeId(topicInfo.getTypeId())
                     .source("1")
                     .build();
-            if (topicInfoMapper.insert(topic) != 1) return new Response(HTTPStatus.Failed, Message.DB_NO_DATA);
-            return getApplyResult(student, topicId);
+            try {
+                if (topicInfoMapper.insert(topic) != 1) return new Response(HTTPStatus.Failed, Message.DB_NO_DATA);
+                return getApplyResult(sid, topicId);
+            } catch (Exception e){
+                if(e.getMessage().contains("for key 'PRIMARY'"))
+                    return new Response(HTTPStatus.Failed, "不能再次申请该课题");
+                else{
+                    e.printStackTrace();
+                    return new Response(HTTPStatus.Failed, e.getMessage());
+                }
+            }
+    }
+
+    private Response canApply(String accessToken) {
+        try {
+            Student student = (Student) userService.permission(accessToken, "Student");
+            QueryWrapper<Topic> topicQueryWrapper = new QueryWrapper<>();
+            topicQueryWrapper.eq("SID", student.getSid());
+            if (topicInfoMapper.selectOne(topicQueryWrapper) != null)
+                return new Response(HTTPStatus.Failed, "你已有课题，无法再申请");
+            return new Response(HTTPStatus.OK, student.getSid());
         } catch (PermissionException permissionException) {
             return new Response(HTTPStatus.NotAllowed, Message.USER_PERMISSION_ERROR);
         } catch (NullPointerException npe) {
@@ -117,8 +140,7 @@ public class StudentService {
         }
     }
 
-    private Response getApplyResult(Student student, String topicId) {
-        String sid = student.getSid();
+    private Response getApplyResult(String sid, String topicId) {
         Application application = new Application();
         application.setSid(sid);
         application.setTopicId(topicId);
@@ -164,6 +186,8 @@ public class StudentService {
             response.put("status", HTTPStatus.OK);
             response.put("topic",topic);
             response.put("type",type);
+            Teacher teacher = teacherMapper.selectById(topic.getTid());
+            response.put("name", teacher.getName());
             return response;
         } catch (PermissionException permissionException) {
             response.put("status", HTTPStatus.NotAllowed);

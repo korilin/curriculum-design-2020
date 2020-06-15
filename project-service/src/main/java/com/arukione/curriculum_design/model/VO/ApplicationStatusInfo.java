@@ -5,8 +5,8 @@ import lombok.Data;
 @Data
 public class ApplicationStatusInfo {
     String TopicName;
-    String TypeName;
     String SName;
     String ApplyTime;
     String Status;
+    String Source;
 }

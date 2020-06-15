@@ -1,7 +1,7 @@
 <template>
   <div>
     <List>
-      <ListItem class="Padding10">已有课题：{{topicList.length}}/20</ListItem>
+      <ListItem class="Padding10">已创建课题：{{tNum}}/20</ListItem>
       <ListItem style="background:#f8f8f9">
         <Row class="row">
           <Col span="5">课题编号</Col>
@@ -11,23 +11,25 @@
           <Col span="4">操作</Col>
         </Row>
       </ListItem>
-      <ListItem v-for="(topic,index) in topicList" :key="index">
-        <Row class="row">
-          <Col span="5">{{topic.topicID}}</Col>
-          <Col span="5">{{topic.topicName}}</Col>
-          <Col span="5">{{topic.type}}</Col>
-          <Col span="5">{{topic.sname?topic.sname:"未选"}}</Col>
-          <Col span="4">
-            <Button type="primary" size="small" class="opButton" @click="changeTopic(index)">修改</Button>
-            <Button
-              type="error"
-              size="small"
-              class="opButton"
-              @click="deleteTopic(topic.topicID,index)"
-            >删除</Button>
-          </Col>
-        </Row>
-      </ListItem>
+      <template v-for="(topic,index) in topicList">
+        <ListItem :key="index" v-if="topic.source=='0'">
+          <Row class="row">
+            <Col span="5">{{topic.topicID}}</Col>
+            <Col span="5">{{topic.topicName}}</Col>
+            <Col span="5">{{topic.type}}</Col>
+            <Col span="5">{{topic.sname?topic.sname:"未选"}}</Col>
+            <Col span="4">
+              <Button type="primary" size="small" class="opButton" @click="changeTopic(index)">修改</Button>
+              <Button
+                type="error"
+                size="small"
+                class="opButton"
+                @click="deleteTopic(topic.topicID,index)"
+              >删除</Button>
+            </Col>
+          </Row>
+        </ListItem>
+      </template>
     </List>
     <Modal
       v-model="showInfoModal"
@@ -90,7 +92,9 @@ export default {
         introduction: "课题介绍",
         type: "课题类型"
       },
-      topicList: []
+      topicList: [],
+      sNum: 0,
+      tNum: 0
     };
   },
   created() {
@@ -112,8 +116,11 @@ export default {
       }
     })
       .then(response => {
-        if (response.data.status == 200) this.topicList = response.data.topicViews;
-        else this.$Message.error("课题获取失败");
+        if (response.data.status == 200) {
+          this.topicList = response.data.topicViews;
+          this.tNum = response.data.tnum;
+          this.sNum = response.data.snum;
+        } else this.$Message.error("课题获取失败");
       })
       .catch(error => {
         this.$Message.error(error.message);

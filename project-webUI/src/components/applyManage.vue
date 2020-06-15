@@ -12,23 +12,23 @@
       </ListItem>
       <ListItem v-for="(info,index) in applicationInfo" :key="index">
         <Row class="row">
-          <Col span="5">{{info.topicInfo.TopicName}}</Col>
-          <Col span="4">{{applyType[info.topicInfo.Source]}}</Col>
-          <Col span="4">{{info.studentInfo.SName}}</Col>
-          <Col span="5">{{info.ApplyTime}}</Col>
+          <Col span="5">{{info.topicName}}</Col>
+          <Col span="4">{{applyType[info.source]}}</Col>
+          <Col span="4">{{info.sname}}</Col>
+          <Col span="5">{{info.applyTime}}</Col>
           <Col span="6">
             <Button type="info" size="small" class="opButton" @click="showInfo(index)">查看</Button>
             <Button
               type="success"
               size="small"
               class="opButton"
-              @click="accept(info.studentInfo.SID, info.topicInfo.TopicID, info.studentInfo.SName, info.topicInfo.TopicName)"
+              @click="accept(info.sid, info.topicID, info.sname, info.topicName, index)"
             >同意</Button>
             <Button
               type="error"
               size="small"
               class="opButton"
-              @click="refuse(info.studentInfo.SID, info.topicInfo.TopicID, info.studentInfo.SName, info.topicInfo.TopicName)"
+              @click="refuse(info.sid, info.topicID, info.sname, info.topicName, index)"
             >拒绝</Button>
           </Col>
         </Row>
@@ -36,21 +36,23 @@
     </List>
     <Modal v-model="showInfoModal" class-name="vertical-center-modal" width="40%">
       <div class="Padding20">
-        <Tabs type="card" v-model="tabStatus">
+        <Tabs type="card" v-model="tabStatus" v-if="showInfoModal">
           <TabPane label="课题信息" name="0">
-            <div class="Padding10">课题编号：{{applicationInfo[index].topicInfo.TopicID}}</div>
-            <div class="Padding10">课题名称：{{applicationInfo[index].topicInfo.TopicName}}</div>
-            <div class="Padding10">课题类型：{{applicationInfo[index].topicInfo.Type}}</div>
-            <div class="Padding10">课题来源：{{applyType[applicationInfo[index].topicInfo.Source]}}</div>
+            <div class="Padding10">课题编号：{{applicationInfo[index].topicID}}</div>
+            <div class="Padding10">课题名称：{{applicationInfo[index].topicName}}</div>
+            <div class="Padding10">课题类型：{{applicationInfo[index].typeName}}</div>
+            <div class="Padding10">课题来源：{{applyType[applicationInfo[index].source]}}</div>
             <div class="Padding10">
               课题介绍：
-              <div class="Padding20">{{applicationInfo[index].topicInfo.Introduction}}</div>
+              <div class="Padding20">{{applicationInfo[index].introduction}}</div>
             </div>
           </TabPane>
           <TabPane label="学生信息" name="1">
-            <div class="Padding10">学号：{{applicationInfo[index].studentInfo.SID}}</div>
-            <div class="Padding10">姓名：{{applicationInfo[index].studentInfo.SName}}</div>
-            <div class="Padding10">班级：{{applicationInfo[index].studentInfo.ClassName}}</div>
+            <div class="Padding10">学号：{{applicationInfo[index].sid}}</div>
+            <div class="Padding10">姓名：{{applicationInfo[index].sname}}</div>
+            <div
+              class="Padding10"
+            >班级：{{applicationInfo[index].profName + applicationInfo[index].classNumber}}班</div>
           </TabPane>
         </Tabs>
       </div>
@@ -77,23 +79,31 @@ export default {
     };
   },
   created() {
-    this.applicationInfo = [
-      {
-        topicInfo: {
-          TopicID: "10003",
-          TopicName: "毕业设计选题系统",
-          Type: "开发类",
-          Introduction: "管理系统介绍",
-          Source: 0
-        },
-        studentInfo: {
-          SID: "201835020822",
-          SName: "ARUKI",
-          ClassName: "软件工程8班"
-        },
-        ApplyTime: "2020-5-25 1:05"
+    this.axios({
+      method: "get",
+      url: "/getStudentApply",
+      params: {
+        accessToken: localStorage.getItem("access_token")
       }
-    ];
+    })
+      .then(response => {
+        var status = response.data.status;
+        console.log(response.data);
+        if (status == 200)
+          this.applicationInfo = response.data.studentApplicationList;
+        else if (status == 401) {
+          this.$Message.error(response.data.message);
+          localStorage.removeItem("access_token");
+          this.$router.replace({
+            name: "Login"
+          });
+        } else if (status == 406) this.applicationInfo = [];
+        else this.$Message.error(response.data.message);
+      })
+      .catch(error => {
+        this.$Message.error(error.message);
+        console.log(error);
+      });
   },
   methods: {
     showInfo: function(index) {
@@ -105,14 +115,78 @@ export default {
       this.tabStatus = "0";
       this.showInfoModal = false;
     },
-    accept: function(SID, TopicID, SName, TopicName) {
+    accept: function(SID, TopicID, SName, TopicName, index) {
       this.$Modal.confirm({
-        title: "是否接受“" + SName + "”对课题”" + TopicName + "“的申请?"
+        title: "是否接受“" + SName + "”对课题”" + TopicName + "“的申请?",
+        onOk: () => {
+          this.axios({
+            method: "post",
+            url: "/applyManage",
+            params: {
+              accessToken: localStorage.getItem("access_token")
+            },
+            data: {
+              sid: SID,
+              topicId: TopicID,
+              status: "1"
+            }
+          })
+            .then(response => {
+              var status = response.data.status;
+              var data = response.data;
+              if (status == 204) {
+                this.applicationInfo.splice(index, 1);
+                this.$Message.success("已同意");
+              } else if (status == 401) {
+                this.$Message.error(response.data.message);
+                localStorage.removeItem("access_token");
+                this.$router.replace({
+                  name: "Login"
+                });
+              } else this.$Message.error(data.message);
+            })
+            .catch(error => {
+              this.$Message.error(error.message);
+              console.log(error);
+            });
+        }
       });
     },
-    refuse: function(SID, TopicID, SName, TopicName) {
+    refuse: function(SID, TopicID, SName, TopicName, index) {
       this.$Modal.confirm({
-        title: "是否拒绝“" + SName + "”对课题”" + TopicName + "“的申请?"
+        title: "是否拒绝“" + SName + "”对课题”" + TopicName + "“的申请?",
+        onOk: () => {
+          this.axios({
+            method: "post",
+            url: "/applyManage",
+            params: {
+              accessToken: localStorage.getItem("access_token")
+            },
+            data: {
+              sid: SID,
+              topicId: TopicID,
+              status: "2"
+            }
+          })
+            .then(response => {
+              var status = response.data.status;
+              var data = response.data;
+              if (status == 204) {
+                this.applicationInfo.splice(index, 1);
+                this.$Message.success("已拒绝");
+              } else if (status == 401) {
+                this.$Message.error(response.data.message);
+                localStorage.removeItem("access_token");
+                this.$router.replace({
+                  name: "Login"
+                });
+              } else this.$Message.error(data.message);
+            })
+            .catch(error => {
+              this.$Message.error(error.message);
+              console.log(error);
+            });
+        }
       });
     }
   }

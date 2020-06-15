@@ -340,6 +340,7 @@ export default {
     deleteTeacher: function(tid, index) {
       this.$Modal.confirm({
         title: "确认删除导师账号：" + tid,
+        content: "删除账号将会删除与该账号相关的所有数据，是否确认删除？",
         loading: true,
         onOk: () => {
           this.axios({
@@ -379,6 +380,7 @@ export default {
     deleteStudent: function(sid, index) {
       this.$Modal.confirm({
         title: "确认删除学生账号：" + sid,
+        content: "删除账号将会删除与该账号相关的所有数据，是否确认删除？",
         loading: true,
         onOk: () => {
           this.axios({

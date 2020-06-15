@@ -39,17 +39,17 @@ public class TeacherService {
 
     @Autowired
     TeacherService(UserService userService, TeacherMapper teacherMapper,
-                   ApplicationMapper applicationMapper,StudentMapper studentMapper,
-                   ProfessionMapper professionMapper,DepartmentMapper departmentMapper,
-                   TopicInfoMapper topicInfoMapper,TopicTypeMapper topicTypeMapper) {
+                   ApplicationMapper applicationMapper, StudentMapper studentMapper,
+                   ProfessionMapper professionMapper, DepartmentMapper departmentMapper,
+                   TopicInfoMapper topicInfoMapper, TopicTypeMapper topicTypeMapper) {
         this.userService = userService;
         this.studentMapper = studentMapper;
         this.teacherMapper = teacherMapper;
         this.topicInfoMapper = topicInfoMapper;
-        this.applicationMapper=applicationMapper;
-        this.professionMapper=professionMapper;
-        this.departmentMapper=departmentMapper;
-        this.topicTypeMapper=topicTypeMapper;
+        this.applicationMapper = applicationMapper;
+        this.professionMapper = professionMapper;
+        this.departmentMapper = departmentMapper;
+        this.topicTypeMapper = topicTypeMapper;
     }
 
     Response teacherPermission(String accessToken) {
@@ -93,7 +93,7 @@ public class TeacherService {
             QueryWrapper<Topic> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("TID", teacher.getTid());
             List<Topic> topics = topicInfoMapper.selectList(queryWrapper);
-            if(topics.size()>=20) return new Response(HTTPStatus.Failed, "您已有的课题已经达到了20个，无法继续添加");
+            if (topics.size() >= 20) return new Response(HTTPStatus.Failed, "您已有的课题已经达到了20个，无法继续添加");
             Topic topic = Topic.builder()
                     .topicId(Generator.generateTopicID())
                     .topicName(topicInfo.getTopicName())
@@ -110,51 +110,23 @@ public class TeacherService {
         }
     }
 
-    public ArrayList<Object> getStudentApply(String status) {
-        ArrayList<Object> response = new ArrayList<Object>();
-
-        //获取所有申请数据的学生id与课题id及时间
-        ArrayList<Application> apps = applicationMapper.getApplicationsOfStatus(status);
-
-        //循环获取所有详细信息
-        for (int i = 0; i < apps.size(); i++) {
-            ArrayList<Object> temp = new ArrayList<Object>();
-            Application app = apps.get(i);
-
-            //获得studentInfo
-            Student stu = studentMapper.getStudent(app.getSid());//获得sname,proid
-            Profession pro = professionMapper.getProfession(stu.getProfessionId());//获得proname,depid
-            Department dep = departmentMapper.getDepartmen(pro.getDeptId());//获得depname
-
-            //获得topicInfo
-            Topic topic = topicInfoMapper.getTopic(app.getTopicId());//获得topicname,introduction,Source
-
-            TopicType type = topicTypeMapper.getTopicType(topic.getTypeId());//获得typename
-
-            //添加List
-            temp.add(app.getApplyTime());
-            temp.add(app.getStatus());
-            temp.add(stu);
-            temp.add(pro);
-            temp.add(dep);
-            temp.add(topic);
-            temp.add(type);
-            response.add(temp);
-        }
-        return response;
-    }
     public Response getTopicT(String accessToken) {
         try {
             Teacher teacher = (Teacher) userService.permission(accessToken, "Teacher");
             String tid = teacher.getTid();
             ArrayList<TopicView> topicViews = topicInfoMapper.getTopicN(tid);
+            int tNums = 0, sNums = 0;
             for (TopicView topic : topicViews) {
+                if (topic.getSource().equals("0"))
+                    tNums++;
+                else
+                    sNums++;
                 String sid = topic.getSID();
-                if (sid == null) break;
+                if (sid == null) continue;
                 Student student = studentMapper.selectById(sid);
                 topic.setSName(student.getName());
             }
-            return new TopicTResponse(HTTPStatus.OK, topicViews);
+            return new TopicTResponse(HTTPStatus.OK, topicViews, tNums, sNums);
         } catch (PermissionException permissionException) {
             return new Response(HTTPStatus.NotAllowed, Message.USER_PERMISSION_ERROR);
         } catch (NullPointerException npe) {
@@ -167,7 +139,7 @@ public class TeacherService {
         if (response != null) return response;
         Topic topic = new Topic();
         try {
-            if (key.equals("type")){
+            if (key.equals("type")) {
                 QueryWrapper<TopicType> queryWrapper = new QueryWrapper<>();
                 queryWrapper.eq("TypeName", value);
                 List<TopicType> topicTypes = topicTypeMapper.selectList(queryWrapper);
@@ -176,26 +148,25 @@ public class TeacherService {
             topic.setValue(key, value);
             topic.setTopicId(id);
             return userService.opsResult(topicInfoMapper.updateById(topic));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return new Response(HTTPStatus.Failed, e.getMessage());
         }
     }
 
-    public Response deleteTopic(String accessToken, String id){
+    public Response deleteTopic(String accessToken, String id) {
         Response response = teacherPermission(accessToken);
         if (response != null) return response;
         return userService.opsResult(topicInfoMapper.deleteById(id));
     }
 
     //获取指导学生信息
-    public Response getGuideStudentInfo(String accessToken){
+    public Response getGuideStudentInfo(String accessToken) {
         try {
             Teacher teacher = (Teacher) userService.permission(accessToken, "Teacher");
             String tid = teacher.getTid();
-            ArrayList<GuideStudentInfo> gsInfo= studentMapper.getGuideStudentInfo(tid);
-            return new GuideStudentInfoResponse(200,gsInfo);
+            ArrayList<GuideStudentInfo> gsInfo = studentMapper.getGuideStudentInfo(tid);
+            return new GuideStudentInfoResponse(200, gsInfo);
         } catch (PermissionException permissionException) {
             return new Response(HTTPStatus.NotAllowed, Message.USER_PERMISSION_ERROR);
         } catch (NullPointerException npe) {
@@ -205,12 +176,12 @@ public class TeacherService {
 
 
     //获取申请处理记录
-    public Response getApplicationStatus(String accessToken){
+    public Response getApplicationStatus(String accessToken) {
         try {
             Teacher teacher = (Teacher) userService.permission(accessToken, "Teacher");
             String tid = teacher.getTid();
-            ArrayList<ApplicationStatusInfo> asInfo= studentMapper.getApplicationStatusInfo(tid);
-            return new ApplicationStatusInfoResponse(200,asInfo);
+            ArrayList<ApplicationStatusInfo> asInfo = studentMapper.getApplicationStatusInfo(tid);
+            return new ApplicationStatusInfoResponse(200, asInfo);
         } catch (PermissionException permissionException) {
             return new Response(HTTPStatus.NotAllowed, Message.USER_PERMISSION_ERROR);
         } catch (NullPointerException npe) {
@@ -219,16 +190,38 @@ public class TeacherService {
     }
 
     //获取未处理的学生申请
-    public Response getStudentApplication(String accessToken){
+    public Response getStudentApplication(String accessToken) {
         try {
             Teacher teacher = (Teacher) userService.permission(accessToken, "Teacher");
             String tid = teacher.getTid();
-            ArrayList<StudentApplication> saInfo= studentMapper.getStudentApplication(tid);
-            return new StudentApplicationResponse(200,saInfo);
+            ArrayList<StudentApplication> saInfo = studentMapper.getStudentApplication(tid);
+            return new StudentApplicationResponse(200, saInfo);
         } catch (PermissionException permissionException) {
             return new Response(HTTPStatus.NotAllowed, Message.USER_PERMISSION_ERROR);
         } catch (NullPointerException npe) {
             return new Response(HTTPStatus.Unauthorized, Message.NO_LOGIN_STATUS);
         }
+    }
+
+    public Response applyManage(String accessToken, String sid, String topicId, String status) {
+        Response response = teacherPermission(accessToken);
+        if (response != null) return response;
+        Topic topic = new Topic();
+        topic.setTopicId(topicId);
+        topic.setSid(sid);
+        Application application = new Application();
+        if (status.equals("1")) {
+            if (topicInfoMapper.updateById(topic) != 1)
+                return new Response(HTTPStatus.Failed, Message.DB_NOT_OPERATION);
+            QueryWrapper<Application> applicationQueryWrapper = new QueryWrapper<>();
+            applicationQueryWrapper.eq("TopicID", topicId).or().eq("SID", sid);
+            application.setStatus("4");
+            applicationMapper.update(application, applicationQueryWrapper);
+        }
+        QueryWrapper<Application> applicationQueryWrapper = new QueryWrapper<>();
+        applicationQueryWrapper.eq("TopicID", topicId).eq("SID", sid);
+        application.setStatus(status);
+        applicationMapper.update(application, applicationQueryWrapper);
+        return new Response(HTTPStatus.Success);
     }
 }

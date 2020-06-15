@@ -8,12 +8,16 @@ import java.util.ArrayList;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class TopicTResponse extends Response{
+public class TopicTResponse extends Response {
 
     ArrayList<TopicView> topicViews;
+    int tNum;
+    int sNum;
 
-    public TopicTResponse(int status, ArrayList<TopicView> topicViews){
+    public TopicTResponse(int status, ArrayList<TopicView> topicViews, int tNum, int sNum) {
         super(status);
         this.topicViews = topicViews;
+        this.tNum = tNum;
+        this.sNum = sNum;
     }
 }

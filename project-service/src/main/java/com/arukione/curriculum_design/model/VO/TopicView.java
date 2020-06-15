@@ -10,4 +10,5 @@ public class TopicView {
     String Type;
     String SID;
     String SName;
+    String Source;
 }

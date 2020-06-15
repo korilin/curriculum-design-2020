@@ -1,18 +1,18 @@
 package com.arukione.curriculum_design.service;
 
+import com.arukione.curriculum_design.mapper.ApplicationMapper;
 import com.arukione.curriculum_design.mapper.StudentMapper;
 import com.arukione.curriculum_design.mapper.TeacherMapper;
+import com.arukione.curriculum_design.mapper.TopicInfoMapper;
 import com.arukione.curriculum_design.model.DTO.Request.NewStudent;
 import com.arukione.curriculum_design.model.DTO.Request.NewTeacher;
 import com.arukione.curriculum_design.model.DTO.Response.AccountResponse;
 import com.arukione.curriculum_design.model.DTO.Response.Response;
-import com.arukione.curriculum_design.model.entity.Student;
-import com.arukione.curriculum_design.model.entity.Teacher;
-import com.arukione.curriculum_design.model.entity.User;
+import com.arukione.curriculum_design.model.entity.*;
 import com.arukione.curriculum_design.utils.HTTPStatus;
 import com.arukione.curriculum_design.utils.Message;
 import com.arukione.curriculum_design.exception.PermissionException;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -31,13 +31,17 @@ public class AdminService {
     final StudentMapper studentMapper;
     final TeacherMapper teacherMapper;
     final UserService userService;
+    final TopicInfoMapper topicInfoMapper;
+    final ApplicationMapper applicationMapper;
 
 
     @Autowired
-    AdminService(StudentMapper studentMapper, HttpSession httpSession, TeacherMapper teacherMapper, UserService userService) {
+    AdminService(StudentMapper studentMapper, HttpSession httpSession, TeacherMapper teacherMapper, UserService userService, TopicInfoMapper topicInfoMapper, ApplicationMapper applicationMapper) {
         this.studentMapper = studentMapper;
         this.teacherMapper = teacherMapper;
         this.userService = userService;
+        this.topicInfoMapper = topicInfoMapper;
+        this.applicationMapper = applicationMapper;
     }
 
     public Response adminPermission(String accessToken) {
@@ -90,15 +94,42 @@ public class AdminService {
     }
 
     public Response deleteStudentByID(String accessToken, String SID) {
+    try {
         return opsResult(accessToken, studentMapper.deleteById(SID), "删除失败");
+    }catch (Exception e){
+        if(e.getMessage().contains("foreign key")){
+            topicInfoMapper.updateSID(SID);
+            QueryWrapper<Application> applicationQueryWrapper = new QueryWrapper<>();
+            applicationQueryWrapper.eq("SID", SID);
+            applicationMapper.delete(applicationQueryWrapper);
+            return opsResult(accessToken, studentMapper.deleteById(SID), "删除失败");
+        }else {
+            e.printStackTrace();
+            return new Response(HTTPStatus.Failed, e.getMessage());
+        }
+    }
     }
 
     public Response deleteTeacherByID(String accessToken, String TID) {
         try {
             return opsResult(accessToken, teacherMapper.deleteById(TID), "删除失败");
         } catch (Exception e) {
-            e.printStackTrace();
-            return new Response(HTTPStatus.Failed, e.getMessage());
+            if(e.getMessage().contains("foreign key")){
+                QueryWrapper<Topic> topicQueryWrapper = new QueryWrapper<>();
+                topicQueryWrapper.eq("TID", TID);
+                QueryWrapper<Application> applicationQueryWrapper = new QueryWrapper<>();
+                List<Topic> topics = topicInfoMapper.selectList(topicQueryWrapper);
+                for(Topic topic: topics){
+                    applicationQueryWrapper.eq("TopicID", topic.getTopicId());
+                    applicationQueryWrapper.or();
+                }
+                applicationMapper.delete(applicationQueryWrapper);
+                topicInfoMapper.delete(topicQueryWrapper);
+                return opsResult(accessToken, teacherMapper.deleteById(TID), "删除失败");
+            }else {
+                e.printStackTrace();
+                return new Response(HTTPStatus.Failed, e.getMessage());
+            }
         }
     }
 

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="topicInfo==0">
+  <div v-if="teacherInfo==0">
     <h1></h1>
   </div>
   <div v-else-if="teacherInfo==null">

@@ -9,20 +9,20 @@
     <h1 style="color:#19be6b">已通过课题</h1>
     <div class="info">
       课题名称：
-      <span class="content">{{topicInfo.TopicName}}</span>
+      <span class="content">{{topicInfo.topicName}}</span>
     </div>
     <div class="info">
       课题类型：
-      <span class="content">{{topicInfo.Type}}</span>
+      <span class="content">{{type.typeName}}</span>
     </div>
     <div class="info">
       课题导师：
-      <span class="content">{{topicInfo.TName}}</span>
+      <span class="content">{{TName}}</span>
     </div>
     <div class="info">
       课题信息：
       <Card class="info intro">
-        <p>{{topicInfo.Introduction}}</p>
+        <p>{{topicInfo.introduction}}</p>
       </Card>
     </div>
   </div>
@@ -33,7 +33,9 @@ export default {
   name: "MyTopic",
   data() {
     return {
-      topicInfo: 0
+      topicInfo: 0,
+      type: "",
+      TName: ""
     };
   },
   created() {
@@ -46,15 +48,18 @@ export default {
     })
       .then(response => {
         var status = response.data.status;
-        if (status == 200) this.topicInfo = response.data.topicInfo;
-        else if (status == 401) {
+        console.log(response.data);
+        if (status == 200) {
+          this.type = response.data.type;
+          this.topicInfo = response.data.topic;
+          this.TName = response.data.name;
+        } else if (status == 401) {
           this.$Message.error(response.data.message);
           localStorage.removeItem("access_token");
           this.$router.replace({
             name: "Login"
           });
-        }
-        if (status == 406) this.topicInfo = null;
+        }else if (status == 406) this.topicInfo = null;
         else this.$Message.error(response.data.message);
       })
       .catch(error => {
