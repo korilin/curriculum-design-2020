@@ -37,7 +37,11 @@
         <FormItem label="密码" prop="password">
           <Input v-model="formData.password" placeholder="请输入密码" type="password" />
         </FormItem>
-        <Button type="primary" @click="submit('loginForm')" long style="margin-top:30px">登陆</Button>
+        <FormItem label="验证码" prop="veficateCode">
+          <Input v-model="formData.veficateCode" placeholder="请输入图中的字符"></Input>
+        </FormItem>
+        <img style="margin-left: 95px" v-bind:src="'http://127.0.0.1:5000/verification/img/'+time" @click="changeImg()" />
+        <Button type="primary" @click="submit('loginForm')" long style="margin-top:0px">登陆</Button>
       </Form>
     </Content>
     <Footer class="footer">
@@ -70,16 +74,29 @@ export default {
         callback();
       }
     };
+    const veficateCodeRule = (rule, value, callback) => {
+      if (value === "") {
+        return callback(new Error("必须输入验证码"));
+      } else if (value != this.code) {
+        return callback(new Error("验证码错误"));
+      } else {
+        callback();
+      }
+    };
     return {
       formData: {
         userid: "",
-        password: ""
+        password: "",
+        veficateCode: ""
       },
       userType: "Student",
       loginRule: {
         userid: [{ validator: useridRule, trigger: "blur" }],
-        password: [{ validator: passwordRule, trigger: "blur" }]
-      }
+        password: [{ validator: passwordRule, trigger: "blur" }],
+        veficateCode: [{ validator: veficateCodeRule, trigger: "blur" }]
+      },
+      time: "",
+      code: ""
     };
   },
   created() {
@@ -88,6 +105,17 @@ export default {
       this.$router.replace({
         path: "/main"
       });
+    } else {
+      var time = new Date().getTime();
+      this.axios
+        .get("/verification/code/" + time)
+        .then(response => {
+          this.code = response.data;
+          this.time = time;
+        })
+        .catch(error => {
+          this.$Message.error(error.message);
+        });
     }
   },
   methods: {
@@ -95,6 +123,17 @@ export default {
       this.userType = name;
       this.formData.userid = "";
       this.formData.password = "";
+      this.formData.veficateCode = "";
+      var time = new Date().getTime();
+      this.axios
+        .get("/verification/code/" + time)
+        .then(response => {
+          this.code = response.data;
+          this.time = time;
+        })
+        .catch(error => {
+          this.$Message.error(error.message);
+        });
     },
     submit: function(name) {
       this.$refs[name].validate(valid => {
@@ -115,7 +154,7 @@ export default {
                     userName: response.data.name
                   }
                 });
-              } else if(response.data.status == 406){
+              } else if (response.data.status == 406) {
                 this.$Message.error("账号或密码错误");
               }
             })
@@ -123,9 +162,21 @@ export default {
               this.$Message.error("发生错误:" + error.message);
             });
         } else {
-          this.$Message.error("请填写正确的用户名和密码");
+          this.$Message.error("请填写正确的用户名,密码,验证码");
         }
       });
+    },
+    changeImg: function() {
+ var time = new Date().getTime();
+      this.axios
+        .get("/verification/code/" + time)
+        .then(response => {
+          this.code = response.data;
+          this.time = time;
+        })
+        .catch(error => {
+          this.$Message.error(error.message);
+        });
     }
   }
 };

@@ -7,7 +7,9 @@ import com.arukione.curriculum_design.model.entity.Teacher;
 import com.arukione.curriculum_design.service.UserService;
 import com.arukione.curriculum_design.utils.HTTPStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 
@@ -71,5 +73,10 @@ public class UserController {
        return userService.getTopicType();
     }
 
-
+    @GetMapping("/verification/code/{time}")
+    public String getCode(@PathVariable("time") String time){
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> code = restTemplate.getForEntity("http://127.0.0.1:5000/verification/code/"+time, String.class);
+        return code.getBody();
+    }
 }
