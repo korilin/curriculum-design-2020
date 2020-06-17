@@ -1,23 +1,23 @@
 "filename", "language", "JavaScript", "Vue", "comment", "blank", "total"
 "h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\App.vue", "Vue", 0, 57, 0, 2, 59
-"h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\accountManage.vue", "Vue", 0, 547, 0, 3, 550
+"h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\accountManage.vue", "Vue", 0, 549, 0, 3, 552
 "h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\addStudent.vue", "Vue", 0, 174, 0, 2, 176
 "h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\addTeacher.vue", "Vue", 0, 181, 0, 2, 183
 "h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\addTopic.vue", "Vue", 0, 137, 0, 3, 140
-"h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\allTeacher.vue", "Vue", 0, 79, 0, 2, 81
-"h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\allTopic.vue", "Vue", 0, 87, 0, 2, 89
-"h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\applyManage.vue", "Vue", 0, 135, 0, 2, 137
-"h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\applyManageRecord.vue", "Vue", 0, 85, 0, 2, 87
-"h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\applyRecord.vue", "Vue", 0, 106, 0, 2, 108
-"h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\guideStudents.vue", "Vue", 0, 109, 0, 2, 111
-"h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\myTeacher.vue", "Vue", 0, 75, 0, 2, 77
-"h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\myTopic.vue", "Vue", 0, 70, 0, 2, 72
-"h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\studentTopicApply.vue", "Vue", 0, 145, 0, 3, 148
-"h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\teacherTopicApply.vue", "Vue", 0, 84, 0, 3, 87
-"h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\topicManage.vue", "Vue", 0, 233, 0, 2, 235
+"h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\allTeacher.vue", "Vue", 0, 94, 0, 2, 96
+"h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\allTopic.vue", "Vue", 0, 86, 0, 2, 88
+"h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\applyManage.vue", "Vue", 0, 234, 0, 2, 236
+"h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\applyManageRecord.vue", "Vue", 0, 89, 0, 2, 91
+"h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\applyRecord.vue", "Vue", 0, 93, 0, 2, 95
+"h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\guideStudents.vue", "Vue", 0, 91, 0, 3, 94
+"h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\myTeacher.vue", "Vue", 0, 95, 0, 2, 97
+"h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\myTopic.vue", "Vue", 0, 95, 0, 2, 97
+"h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\studentTopicApply.vue", "Vue", 0, 182, 0, 3, 185
+"h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\teacherTopicApply.vue", "Vue", 0, 146, 0, 3, 149
+"h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\topicManage.vue", "Vue", 0, 241, 0, 2, 243
 "h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\components\userInfo.vue", "Vue", 0, 321, 0, 7, 328
 "h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\main.js", "JavaScript", 14, 0, 0, 3, 17
 "h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\router\index.js", "JavaScript", 26, 0, 0, 5, 31
-"h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\views\login.vue", "Vue", 0, 157, 0, 4, 161
+"h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\views\login.vue", "Vue", 0, 208, 0, 4, 212
 "h:\Code Files\GitHub\curriculum-design-2020\project-webUI\src\views\main.vue", "Vue", 0, 276, 0, 24, 300
-"Total", "-", 40, 3058, 0, 79, 3177
+"Total", "-", 40, 3349, 0, 80, 3469
