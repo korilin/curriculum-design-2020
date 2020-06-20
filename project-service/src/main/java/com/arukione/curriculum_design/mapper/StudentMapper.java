@@ -23,10 +23,10 @@ public interface StudentMapper extends BaseMapper<Student> {
     Student getStudent(String SID);
 
     //获取指导学生信息
-    @Select("select  s.SName,s.SID,dpt.DeptName,pro.ProfName,s.ClassNumber,s.Grade,topic.TopicName " +
+    @Select("select s.SName,s.SID,dpt.DeptName,pro.ProfName,s.ClassNumber,s.Grade,topic.TopicName " +
             "from topic_info topic,application app,student s,department dpt,profession pro " +
             "where topic.TID=#{tid} and topic.TopicID=app.TopicID  " +
-            "and topic.SID=app.SID and topic.SID=s.SID " +
+            "and topic.SID=s.SID and app.Status='1' " +
             "and s.ProfID=pro.ProfID and pro.DeptID=dpt.DeptID")
     ArrayList<GuideStudentInfo> getGuideStudentInfo(String tid);
 

@@ -30,7 +30,16 @@
         </Select>
       </FormItem>
       <FormItem label="班号" prop="ClassNumber">
-        <Input v-model="studentInfo.ClassNumber" placeholder="学生班级" />
+        <Select v-model="studentInfo.ClassNumber" placeholder="学生班级">
+          <Option value=1>1</Option>
+          <Option value=2>2</Option>
+          <Option value=3>3</Option>
+          <Option value=4>4</Option>
+          <Option value=5>5</Option>
+          <Option value=6>6</Option>
+          <Option value=7>7</Option>
+          <Option value=8>8</Option>
+        </Select>
       </FormItem>
       <FormItem label="密码" prop="Password">
         <Input v-model="studentInfo.Password" placeholder="默认密码" />
@@ -91,7 +100,7 @@ export default {
           { required: true, message: "专业不能为空", trigger: "blur" }
         ],
         ClassNumber: [
-          { required: true, message: "年级不能为空", trigger: "change" }
+          { required: true, message: "年级不能为空", trigger: "change"}
         ],
         Password: [
           { required: true, message: "密码不能为空", trigger: "blur" },

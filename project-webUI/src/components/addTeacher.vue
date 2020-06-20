@@ -27,19 +27,32 @@
         </div>
         <div class="input_right">
           <FormItem label="职位" prop="Position">
-            <Input v-model="teacherInfo.Position" placeholder="职位" />
+            <Select v-model="teacherInfo.Position" placeholder="职位">
+              <Option value="无">无</Option>
+              <Option value="教师">教师</Option>
+              <Option value="教导主任">教导主任</Option>
+              <Option value="总务主任">总务主任</Option>
+              <Option value="教研室主任">教研室主任</Option>
+              <Option value="系主任">系主任</Option>
+              <Option value="学院院长">学院院长</Option>
+              <Option value="校长助理">校长助理</Option>
+              <Option value="副校长">副校长</Option>
+              <Option value="书记">书记</Option>
+              <Option value="校长">校长</Option>
+            </Select>
           </FormItem>
           <FormItem label="职称" prop="Rank">
-             <Select @on-change="RankChange">
-               <Option value="无">无</Option>
+            <Select @on-change="RankChange">
+              <Option value="无">无</Option>
               <Option value="教授">教授</Option>
               <Option value="副教授">副教授</Option>
+              <Option value="研究员">研究员</Option>
               <Option value="讲师">讲师</Option>
               <Option value="助教">助教</Option>
             </Select>
           </FormItem>
           <FormItem label="电话" prop="Phone">
-            <Input v-model="teacherInfo.Phone" placeholder="联系电话" />
+            <Input v-model="teacherInfo.Phone" type="tel" number placeholder="联系电话" />
           </FormItem>
           <FormItem label="邮箱" prop="Email">
             <Input v-model="teacherInfo.Email" placeholder="联系邮箱" type="email" />
@@ -73,7 +86,10 @@ export default {
         Password: "123456"
       },
       teacherRule: {
-        TID: [{ required: true, message: "工号不能为空", trigger: "blur" }],
+        TID: [
+          { required: true, message: "工号不能为空", trigger: "blur" },
+          { min: 5, max: 12, message: "工号长度应在5-12之间", trigger: "blur" }
+        ],
         TName: [
           { required: true, message: "姓名不能为空", trigger: "blur" },
           {
@@ -94,6 +110,9 @@ export default {
             message: "密码长度应在6-30个字符之间",
             trigger: "blur"
           }
+        ],
+        Phone: [
+          { min: 10000000000, max: 99999999999, message: "请输入正确的电话", trigger: "blur", type: "number"}
         ]
       },
       professions: []
@@ -115,7 +134,7 @@ export default {
     addTeacher: function(name) {
       this.$refs[name].validate(valid => {
         if (valid) {
-          var info = this.teacherInfo
+          var info = this.teacherInfo;
           this.axios
             .post("/addTeacher", {
               tid: info.TID,
@@ -130,16 +149,15 @@ export default {
             })
             .then(response => {
               var status = response.data.status;
-              if (status == 204)
-                this.$Message.success("添加成功");
-              else if(status == 401){
-                this.$Message.error(response.data.message)
-                localStorage.removeItem("access_token")
+              if (status == 204) this.$Message.success("添加成功");
+              else if (status == 401) {
+                this.$Message.error(response.data.message);
+                localStorage.removeItem("access_token");
                 this.$router.replace({
                   name: "Login"
-                })
-              }else {
-                this.$Message.error(response.data.message)
+                });
+              } else {
+                this.$Message.error(response.data.message);
               }
             })
             .catch(error => {
@@ -153,7 +171,7 @@ export default {
     guideProfessionChange: function(key) {
       this.teacherInfo.GuideProfession = key;
     },
-    RankChange: function(value){
+    RankChange: function(value) {
       this.teacherInfo.Rank = value;
     }
   }

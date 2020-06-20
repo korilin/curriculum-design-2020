@@ -108,7 +108,7 @@ export default {
     } else {
       var time = new Date().getTime();
       this.axios
-        .get("/verification/code/" + time)
+        .get("http://127.0.0.1:5000/verification/code/" + time)
         .then(response => {
           this.code = response.data;
           this.time = time;

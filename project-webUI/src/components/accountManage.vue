@@ -91,7 +91,7 @@
                 <ListItem
                   class="row-wrap"
                   :key="index"
-                  v-if="selectSID?(student.sid==selectSID?true:false):true"
+                  v-if="selectSID?(student.sid.search(selectSID)!=-1?true:false):true"
                 >
                   <Row class="row">
                     <Col span="5">{{student.sid}}</Col>
@@ -135,7 +135,7 @@
                 <ListItem
                   class="row-wrap"
                   :key="index"
-                  v-if="selectTID?(teacher.tid==selectTID?true:false):true"
+                  v-if="selectTID?(teacher.tid.search(selectTID)!=-1?true:false):true"
                 >
                   <Row class="row">
                     <Col span="5">{{teacher.tid}}</Col>

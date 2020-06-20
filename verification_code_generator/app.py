@@ -3,8 +3,10 @@ from PIL import Image, ImageDraw, ImageFont
 import os
 import shutil
 import random
+from flask_cors import *
 
 app = Flask(__name__)
+CORS(app)
 
 words = ["python", "java", "flask", "spring", "linux", "redis", "mysql", "django", "css", "rust",
          "vue", "element", "axios", "nodejs", "react", "angular", "json", "google", "chrome", "edge",

@@ -29,7 +29,7 @@
             <Input v-model="professions[TeacherInfo.guideProfID].name" disabled></Input>
           </FormItem>
           <FormItem label="联系电话" prop="phone">
-            <Input v-model="TeacherInfo.phone" maxlength="11" type="tel"></Input>
+            <Input v-model="TeacherInfo.phone" maxlength="11" type="tel" number></Input>
           </FormItem>
           <FormItem label="联系邮箱" prop="email">
             <Input v-model="TeacherInfo.email" type="email"></Input>
@@ -126,7 +126,7 @@ export default {
       },
       teacherRule: {
         phone: [
-          { min: 11, max: 11, message: "电话号码必须为11位", trigger: "blur" }
+          { min: 10000000000, max: 99999999999, message: "请输入正确格式的电话号码", trigger: "blur", type: "number"}
         ],
         email: [
           { type: "email", message: "请输入有效的邮箱", trigger: "blur" }

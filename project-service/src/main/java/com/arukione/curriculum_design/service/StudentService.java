@@ -128,9 +128,9 @@ public class StudentService {
     private Response canApply(String accessToken) {
         try {
             Student student = (Student) userService.permission(accessToken, "Student");
-            QueryWrapper<Topic> topicQueryWrapper = new QueryWrapper<>();
-            topicQueryWrapper.eq("SID", student.getSid());
-            if (topicInfoMapper.selectOne(topicQueryWrapper) != null)
+            QueryWrapper<Application> applicationQueryWrapper = new QueryWrapper<>();
+            applicationQueryWrapper.eq("SID", student.getSid()).eq("Status", "1");
+            if (applicationMapper.selectOne(applicationQueryWrapper) != null)
                 return new Response(HTTPStatus.Failed, "你已有课题，无法再申请");
             return new Response(HTTPStatus.OK, student.getSid());
         } catch (PermissionException permissionException) {
@@ -155,17 +155,17 @@ public class StudentService {
         try {
             Student stu = (Student) userService.permission(accessToken, "Student");
             //获取已通过的申请记录
-            QueryWrapper<Topic> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("SID", stu.getSid());
-            List<Topic> topics = topicInfoMapper.selectList(queryWrapper);
-            if(topics == null || topics.size()==0) return new UserInfoResponse(HTTPStatus.Failed, Message.DB_NO_DATA);
-            return new UserInfoResponse(200, teacherMapper.selectById(topics.get(0).getTid()));
+            QueryWrapper<Application> applicationQueryWrapper = new QueryWrapper<>();
+            applicationQueryWrapper.eq("SID", stu.getSid()).eq("Status", "1");
+            Application application = applicationMapper.selectOne(applicationQueryWrapper);
+            if(application == null) return new UserInfoResponse(HTTPStatus.Failed, Message.DB_NO_DATA);
+            Topic topic = topicInfoMapper.selectById(application.getTopicId());
+            return new UserInfoResponse(200, teacherMapper.selectById(topic.getTid()));
         } catch (PermissionException permissionException) {
             return new UserInfoResponse(HTTPStatus.NotAllowed, Message.USER_PERMISSION_ERROR);
         } catch (NullPointerException npe) {
             return new UserInfoResponse(HTTPStatus.Unauthorized, Message.NO_LOGIN_STATUS);
         }
-
     }
 
     //获得已通过的课题信息
@@ -174,14 +174,20 @@ public class StudentService {
         try {
             Student stu = (Student) userService.permission(accessToken, "Student");
             QueryWrapper<Topic> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("SID", stu.getSid());
-            List<Topic> topics = topicInfoMapper.selectList(queryWrapper);
-            if(topics==null || topics.size()==0){
-                response.put("status", HTTPStatus.Failed);
-                response.put("message","没有获取到数据");
-                return response;
+            queryWrapper.eq("SID", stu.getSid()).eq("Source", 0);
+            Topic topic = topicInfoMapper.selectOne(queryWrapper);
+            if(topic==null){
+                QueryWrapper<Application> applicationQueryWrapper = new QueryWrapper<>();
+                applicationQueryWrapper.eq("SID", stu.getSid()).eq("Status", "1");
+                Application application = applicationMapper.selectOne(applicationQueryWrapper);
+                System.out.println(application);
+                if (application == null) {
+                    response.put("status", HTTPStatus.Failed);
+                    response.put("message","没有获取到数据");
+                    return response;
+                }
+                topic = topicInfoMapper.selectById(application.getTopicId());
             }
-            Topic topic = topics.get(0);
             TopicType type = topicTypeMapper.getTopicType(topic.getTypeId());
             response.put("status", HTTPStatus.OK);
             response.put("topic",topic);
