@@ -44,7 +44,7 @@
             <div class="Padding10">课题来源：{{applyType[applicationInfo[index].source]}}</div>
             <div class="Padding10">
               课题介绍：
-              <div class="Padding20">{{applicationInfo[index].introduction}}</div>
+              <div class="Padding20" style="white-space: pre-line">{{applicationInfo[index].introduction}}</div>
             </div>
           </TabPane>
           <TabPane label="学生信息" name="1">

@@ -84,6 +84,7 @@ export default {
   padding: 10px;
   font-size: 16px;
   line-height: 30px;
+  white-space: pre-line;
 }
 .content {
   display: inline-block;

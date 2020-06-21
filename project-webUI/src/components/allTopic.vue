@@ -16,7 +16,7 @@
         </Row>
         <Row class="row left">
           <Col span="2" class="bold">介绍:</Col>
-          <Col span="22">{{topic.introduction}}</Col>
+          <Col span="22" style="white-space: pre-line">{{topic.introduction}}</Col>
         </Row>
       </Card>
     </div>

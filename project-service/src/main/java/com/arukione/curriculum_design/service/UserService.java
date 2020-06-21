@@ -158,13 +158,13 @@ public class UserService {
                     Student student = (Student) user;
                     Student studentN = new Student();
                     studentN.setSid(student.getSid());
-                    student.setPassword(password);
+                    studentN.setPassword(password);
                     return opsResult(studentMapper.updateById(studentN));
                 case "Teacher":
                     Teacher teacher = (Teacher) user;
                     Teacher teacherN = new Teacher();
                     teacherN.setTid(teacher.getTid());
-                    teacher.setPassword(password);
+                    teacherN.setPassword(password);
                     return opsResult(teacherMapper.updateById(teacherN));
                 case "Admin":
                     Admin admin = (Admin) user;

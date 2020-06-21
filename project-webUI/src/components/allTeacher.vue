@@ -24,7 +24,7 @@
         </Row>
         <Row class="row left">
           <Col span="4" class="bold">自选课题要求:</Col>
-          <Col span="20">{{teacher.topicDemand}}</Col>
+          <Col span="20" style="white-space: pre-line">{{teacher.topicDemand}}</Col>
         </Row>
       </Card>
     </div>

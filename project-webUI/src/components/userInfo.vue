@@ -1,6 +1,62 @@
 <template>
   <div class="user_info">
-    <template v-if="userType=='Student'">学生</template>
+    <template v-if="userType=='Student'">
+      <div class="info_wrap student_info">
+        <h1>你好，{{StudentInfo.name}}</h1>
+
+        <Form
+          label-position="left"
+          :label-width="100"
+          v-if="StudentInfo&&professions[StudentInfo.professionId]"
+        >
+          <FormItem label="姓名">
+            <span>{{StudentInfo.name}}</span>
+          </FormItem>
+          <FormItem label="学号">
+            <span>{{StudentInfo.sid}}</span>
+          </FormItem>
+          <FormItem label="年级">
+            <span>{{StudentInfo.grade}}</span>
+          </FormItem>
+          <FormItem label="学院">
+            <span>{{professions[StudentInfo.professionId].deptName}}</span>
+          </FormItem>
+          <FormItem label="专业">
+            <span>{{professions[StudentInfo.professionId].name}}</span>
+          </FormItem>
+          <FormItem label="班级">
+            <span>{{StudentInfo.classNumber}}班</span>
+          </FormItem>
+          <FormItem>
+            <Button class="StudentButton" type="primary" @click="showModal">修改密码</Button>
+          </FormItem>
+        </Form>
+
+        <Modal v-model="passwordModal" title="修改密码" footer-hide>
+          <Form
+            :label-width="100"
+            label-position="left"
+            ref="passwordForm"
+            :model="passwordForm"
+            :rules="passwordRule"
+          >
+            <FormItem label="输入旧密码" prop="oldPassword">
+              <Input v-model="passwordForm.oldPassword" type="password" placeholder="旧密码"></Input>
+            </FormItem>
+            <FormItem label="输入新密码" prop="newPassword">
+              <Input v-model="passwordForm.newPassword" type="password" placeholder="新密码"></Input>
+            </FormItem>
+            <FormItem label="确认新密码" prop="twoPassword">
+              <Input v-model="passwordForm.twoPassword" type="password" placeholder="再次输入密码"></Input>
+            </FormItem>
+            <div style="text-align:right;">
+              <Button type="primary" @click="changePassword('passwordForm')">确认</Button>
+              <Button type="text" @click="closeModal">取消</Button>
+            </div>
+          </Form>
+        </Modal>
+      </div>
+    </template>
 
     <template v-if="userType=='Teacher'">
       <div class="info_wrap teacher_info">
@@ -48,9 +104,33 @@
               style="margin-right:20px"
               @click="changeInfoT('TeacherInfo')"
             >保存修改</Button>
-            <Button type="primary" @click="changePassword">修改密码</Button>
+            <Button type="primary" @click="showModal">修改密码</Button>
           </FormItem>
         </Form>
+
+        <Modal v-model="passwordModal" title="修改密码" footer-hide>
+          <Form
+            :label-width="100"
+            label-position="left"
+            ref="passwordForm"
+            :model="passwordForm"
+            :rules="passwordRule"
+          >
+            <FormItem label="输入旧密码" prop="oldPassword">
+              <Input v-model="passwordForm.oldPassword" type="password" placeholder="旧密码"></Input>
+            </FormItem>
+            <FormItem label="输入新密码" prop="newPassword">
+              <Input v-model="passwordForm.newPassword" type="password" placeholder="新密码"></Input>
+            </FormItem>
+            <FormItem label="确认新密码" prop="twoPassword">
+              <Input v-model="passwordForm.twoPassword" type="password" placeholder="再次输入密码"></Input>
+            </FormItem>
+            <div style="text-align:right;">
+              <Button type="primary" @click="changePassword('passwordForm')">确认</Button>
+              <Button type="text" @click="closeModal">取消</Button>
+            </div>
+          </Form>
+        </Modal>
       </div>
     </template>
 
@@ -107,6 +187,7 @@ export default {
       else callback();
     };
     return {
+      passwordModal: false,
       professions: {},
       AdminInfo: {},
       TeacherInfo: {},
@@ -126,7 +207,13 @@ export default {
       },
       teacherRule: {
         phone: [
-          { min: 10000000000, max: 99999999999, message: "请输入正确格式的电话号码", trigger: "blur", type: "number"}
+          {
+            min: 10000000000,
+            max: 99999999999,
+            message: "请输入正确格式的电话号码",
+            trigger: "blur",
+            type: "number"
+          }
         ],
         email: [
           { type: "email", message: "请输入有效的邮箱", trigger: "blur" }
@@ -159,7 +246,10 @@ export default {
         var data = response.data;
         if (data.status == 200) {
           if (this.userType === "Admin") this.AdminInfo = data.adminInfo;
-          if (this.userType === "Teacher") this.TeacherInfo = data.teacherInfo;
+          if (this.userType === "Teacher") {
+            this.TeacherInfo = data.teacherInfo;
+            this.TeacherInfo.phone = parseInt(this.TeacherInfo.phone);
+          }
           if (this.userType === "Student") this.StudentInfo = data.studentInfo;
         } else if (status == 401) {
           this.$Message.error(response.data.message);
@@ -285,10 +375,12 @@ export default {
                     name: "Login"
                   });
                 } else this.$Message.error(data.message);
+                this.passwordModal = false;
               })
               .catch(error => {
                 this.$Message.error(error.message);
                 console.log(error);
+                this.passwordModal = false;
               });
           } else {
             this.$Message.error("旧密码错误");
@@ -297,6 +389,12 @@ export default {
           this.$Message.error("请检查填写的密码");
         }
       });
+    },
+    showModal: function() {
+      this.passwordModal = true;
+    },
+    closeModal: function() {
+      this.passwordModal = false;
     }
   }
 };
@@ -317,6 +415,11 @@ h1 {
   width: 500px;
   margin: auto;
 }
+.student_info {
+  width: 300px;
+  margin: auto;
+  font-weight: bold;
+}
 .admin_button {
   margin-top: 50px;
 }
@@ -324,5 +427,10 @@ h1 {
   margin-top: 50px;
   font-size: 18px;
   font-weight: bold;
+}
+.StudentButton {
+  position: relative;
+  top: 30px;
+  right: 50px;
 }
 </style>
