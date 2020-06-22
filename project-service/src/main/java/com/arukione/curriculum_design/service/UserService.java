@@ -46,7 +46,7 @@ public class UserService {
         QueryWrapper<Student> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("SID", id).eq("Password", password);
         Student student = studentMapper.selectOne(queryWrapper);
-        String accessToken = null;
+        String accessToken;
         if (student != null) {
             accessToken = Generator.generateAccessToken();
             student.setUserType("Student");
@@ -60,7 +60,7 @@ public class UserService {
         QueryWrapper<Teacher> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("TID", id).eq("Password", password);
         Teacher teacher = teacherMapper.selectOne(queryWrapper);
-        String accessToken = null;
+        String accessToken;
         if (teacher != null) {
             accessToken = Generator.generateAccessToken();
             teacher.setUserType("Teacher");

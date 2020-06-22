@@ -16,7 +16,6 @@ import com.arukione.curriculum_design.utils.Generator;
 import com.arukione.curriculum_design.utils.HTTPStatus;
 import com.arukione.curriculum_design.utils.Message;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import net.sf.jsqlparser.statement.select.Top;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,17 +40,6 @@ public class StudentService {
         this.teacherMapper = teacherMapper;
         this.applicationMapper = applicationMapper;
         this.topicTypeMapper = topicTypeMapper;
-    }
-
-    Response studentPermission(String accessToken) {
-        try {
-            userService.permission(accessToken, "Student");
-            return null;
-        } catch (PermissionException permissionException) {
-            return new Response(HTTPStatus.NotAllowed, Message.USER_PERMISSION_ERROR);
-        } catch (NullPointerException npe) {
-            return new Response(HTTPStatus.Unauthorized, Message.NO_LOGIN_STATUS);
-        }
     }
 
     public SelectableTopicResponse getAllTopic(String accessToken) {

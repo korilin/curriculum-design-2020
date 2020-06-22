@@ -16,7 +16,5 @@ public class Admin extends User {
     String adminId;
     @TableField("Password")
     String password;
-    @TableField("TID")
-    String tid;
 
 }

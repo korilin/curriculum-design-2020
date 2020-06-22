@@ -5,12 +5,10 @@ import com.arukione.curriculum_design.model.DTO.Response.Response;
 import com.arukione.curriculum_design.model.DTO.Response.SelectableTeacherResponse;
 import com.arukione.curriculum_design.model.DTO.Response.SelectableTopicResponse;
 import com.arukione.curriculum_design.model.DTO.Response.UserInfoResponse;
-import com.arukione.curriculum_design.model.entity.Teacher;
 import com.arukione.curriculum_design.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 @RestController

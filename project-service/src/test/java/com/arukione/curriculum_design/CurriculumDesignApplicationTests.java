@@ -49,7 +49,6 @@ class CurriculumDesignApplicationTests {
 		Admin admin = new Admin();
 		admin.setAdminId("2");
 		admin.setPassword("3");
-		admin.setTid("4");
 		admin.setUserType("admin");
 		System.out.println(admin+":"+admin.getUserType());
 		redisTemplate.opsForValue().set("test",admin,1, TimeUnit.MINUTES);

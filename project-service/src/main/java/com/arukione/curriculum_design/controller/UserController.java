@@ -3,7 +3,6 @@ package com.arukione.curriculum_design.controller;
 import com.arukione.curriculum_design.model.DTO.Request.LoginRequest;
 import com.arukione.curriculum_design.model.DTO.Response.*;
 import com.arukione.curriculum_design.model.entity.Profession;
-import com.arukione.curriculum_design.model.entity.Teacher;
 import com.arukione.curriculum_design.service.UserService;
 import com.arukione.curriculum_design.utils.HTTPStatus;
 import org.springframework.beans.factory.annotation.Autowired;
