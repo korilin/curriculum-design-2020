@@ -20,25 +20,41 @@
           placeholder="入学年份"
           type="year"
           format="yyyy"
+          :clearable="false"
           :editable="false"
           style="width:200px"
         />
       </FormItem>
+      <FormItem label="院系" prop="department">
+        <Select v-model="studentInfo.department" placeholder="选择院系">
+          <Option v-for="value in departments" :value="value" :key="value">{{value}}</Option>
+        </Select>
+      </FormItem>
       <FormItem label="专业" prop="Profession">
         <Select @on-change="professionChange">
-          <Option v-for="(value,key) in professions" :value="key" :key="key">{{value.name}}</Option>
+          <template v-for="(value,key) in professions">
+            <Option
+              v-if="studentInfo.department?(value.deptName==studentInfo.department):false"
+              :value="key"
+              :key="key"
+            >{{value.name}}</Option>
+          </template>
         </Select>
       </FormItem>
       <FormItem label="班号" prop="ClassNumber">
         <Select v-model="studentInfo.ClassNumber" placeholder="学生班级">
-          <Option value=1>1</Option>
-          <Option value=2>2</Option>
-          <Option value=3>3</Option>
-          <Option value=4>4</Option>
-          <Option value=5>5</Option>
-          <Option value=6>6</Option>
-          <Option value=7>7</Option>
-          <Option value=8>8</Option>
+          <Option value="1">1</Option>
+          <Option value="2">2</Option>
+          <Option value="3">3</Option>
+          <Option value="4">4</Option>
+          <Option value="5">5</Option>
+          <Option value="6">6</Option>
+          <Option value="7">7</Option>
+          <Option value="8">8</Option>
+          <Option value="9">9</Option>
+          <Option value="10">10</Option>
+          <Option value="11">11</Option>
+          <Option value="12">12</Option>
         </Select>
       </FormItem>
       <FormItem label="密码" prop="Password">
@@ -63,7 +79,8 @@ export default {
       studentInfo: {
         SID: "",
         SName: "",
-        Grade: 0,
+        department: false,
+        Grade: "",
         Profession: "",
         ClassNumber: "",
         Password: "123456"
@@ -97,10 +114,13 @@ export default {
           }
         ],
         Profession: [
-          { required: true, message: "专业不能为空", trigger: "blur" }
+          { required: true, message: "专业不能为空", trigger: "change" }
+        ],
+        department: [
+          { required: true, message: "院系不能为空", trigger: "change" }
         ],
         ClassNumber: [
-          { required: true, message: "年级不能为空", trigger: "change"}
+          { required: true, message: "年级不能为空", trigger: "change" }
         ],
         Password: [
           { required: true, message: "密码不能为空", trigger: "blur" },
@@ -112,7 +132,22 @@ export default {
           }
         ]
       },
-      professions: []
+      professions: [],
+      departments: [
+        "城建与环境学院",
+        "金融与贸易学院",
+        "计算机与信息学院",
+        "文学与传媒学院",
+        "艺术学院",
+        "商学院",
+        "法学院",
+        "智能制造学院",
+        "外国语学院",
+        "创意设计学院",
+        "创新创业学院",
+        "体育教学部",
+        "马克思主义学院"
+      ]
     };
   },
   created() {
@@ -143,16 +178,15 @@ export default {
             })
             .then(response => {
               var status = response.data.status;
-              if (status == 204)
-                this.$Message.success("添加成功");
-              else if(status == 401){
-                this.$Message.error(response.data.message)
-                localStorage.removeItem("access_token")
+              if (status == 204) this.$Message.success("添加成功");
+              else if (status == 401) {
+                this.$Message.error(response.data.message);
+                localStorage.removeItem("access_token");
                 this.$router.replace({
                   name: "Login"
-                })
-              }else {
-                this.$Message.error(response.data.message)
+                });
+              } else {
+                this.$Message.error(response.data.message);
               }
             })
             .catch(error => {

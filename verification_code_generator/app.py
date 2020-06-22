@@ -13,6 +13,8 @@ words = ["python", "java", "flask", "spring", "linux", "redis", "mysql", "django
          "php", "golang", "numpy", "maven", "docker", "android", "https", "github", "markdown", "kotlin",
          "net", "html", "iview", "ant", "chartjs", "hugo", "hexo", "paddle", "jinja", "thymeleaf"]
 
+random_str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
 colors = ["red", "blue", "green", "yellow", "white", "pink", "black"]
 
 
