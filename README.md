@@ -20,7 +20,7 @@
 
 **后端Web框架：Spring Boot、Flask**
 
-**数据库框架：MyBatsi-Plus**
+**数据库框架：MyBatsi-Plus、Spring-Data-Redis**
 
 **数据库：MySQL8.0、Redis3.2**
 
