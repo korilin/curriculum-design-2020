@@ -53,8 +53,14 @@
           <MenuItem name="添加导师账号" v-if="userType=='Admin'">
             <Icon type="md-person-add" />添加导师账号
           </MenuItem>
+          <MenuItem name="导入学生账号" v-if="userType=='Admin'">
+            <Icon type="md-cloud-upload" />导入学生账号
+          </MenuItem>
+          <MenuItem name="导入导师账号" v-if="userType=='Admin'">
+            <Icon type="md-cloud-upload" />导入导师账号
+          </MenuItem>
           <MenuItem name="账号信息管理" v-if="userType=='Admin'">
-            <Icon type="ios-person-outline" />账号信息管理
+            <Icon type="ios-people" />账号信息管理
           </MenuItem>
 
           <Submenu name="我的课题" v-if="userType=='Teacher'">
@@ -166,6 +172,14 @@
                 <AddTeacher></AddTeacher>
               </template>
 
+              <template v-if="showComponent=='导入学生账号'">
+                <ImportStudent></ImportStudent>
+              </template>
+
+              <template v-if="showComponent=='导入导师账号'">
+                <ImportTeacher></ImportTeacher>
+              </template>
+
               <template v-if="showComponent=='账号信息管理'">
                 <AccountManage></AccountManage>
               </template>
@@ -242,6 +256,8 @@ import MyTopic from "../components/myTopic";
 import ApplyRecord from "../components/applyRecord";
 import AllTeacher from "../components/allTeacher";
 import MyTeacher from "../components/myTeacher";
+import ImportStudent from "../components/importStudent";
+import ImportTeacher from "../components/importTeacher";
 
 export default {
   name: "Main",
@@ -270,7 +286,9 @@ export default {
     MyTopic,
     ApplyRecord,
     AllTeacher,
-    MyTeacher
+    MyTeacher,
+    ImportStudent,
+    ImportTeacher
   },
   methods: {
     getSelectValue: function(name) {

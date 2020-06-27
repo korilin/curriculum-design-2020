@@ -113,6 +113,9 @@ export default {
         ],
         Phone: [
           { min: 10000000000, max: 99999999999, message: "请输入正确的电话", trigger: "blur", type: "number"}
+        ],
+        Email: [
+          {message:"请输入正确的邮箱", trigger:"blur", type:"email"}
         ]
       },
       professions: []
