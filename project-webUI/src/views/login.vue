@@ -37,10 +37,10 @@
         <FormItem label="密码" prop="password">
           <Input v-model="formData.password" placeholder="请输入密码" type="password" />
         </FormItem>
-        <FormItem label="验证码" prop="veficateCode">
+        <!-- <FormItem label="验证码" prop="veficateCode">
           <Input v-model="formData.veficateCode" placeholder="请输入图中的字符"></Input>
         </FormItem>
-        <img style="margin-left: 95px" v-bind:src="'http://127.0.0.1:5000/verification/img/'+time" @click="changeImg()" />
+        <img style="margin-left: 95px" v-bind:src="'http://127.0.0.1:5000/verification/img/'+time" @click="changeImg()" /> -->
         <Button type="primary" @click="submit('loginForm')" long style="margin-top:0px">登陆</Button>
       </Form>
     </Content>
@@ -74,15 +74,15 @@ export default {
         callback();
       }
     };
-    const veficateCodeRule = (rule, value, callback) => {
-      if (value === "") {
-        return callback(new Error("必须输入验证码"));
-      } else if (value != this.code) {
-        return callback(new Error("验证码错误"));
-      } else {
-        callback();
-      }
-    };
+    // const veficateCodeRule = (rule, value, callback) => {
+    //   if (value === "") {
+    //     return callback(new Error("必须输入验证码"));
+    //   } else if (value != this.code) {
+    //     return callback(new Error("验证码错误"));
+    //   } else {
+    //     callback();
+    //   }
+    // };
     return {
       formData: {
         userid: "",
@@ -93,7 +93,7 @@ export default {
       loginRule: {
         userid: [{ validator: useridRule, trigger: "blur" }],
         password: [{ validator: passwordRule, trigger: "blur" }],
-        veficateCode: [{ validator: veficateCodeRule, trigger: "blur" }]
+        // veficateCode: [{ validator: veficateCodeRule, trigger: "blur" }]
       },
       time: "",
       code: ""
@@ -106,16 +106,16 @@ export default {
         path: "/main"
       });
     } else {
-      var time = new Date().getTime();
-      this.axios
-        .get("http://127.0.0.1:5000/verification/code/" + time)
-        .then(response => {
-          this.code = response.data;
-          this.time = time;
-        })
-        .catch(error => {
-          this.$Message.error(error.message);
-        });
+      // var time = new Date().getTime();
+      // this.axios
+      //   .get("http://127.0.0.1:5000/verification/code/" + time)
+      //   .then(response => {
+      //     this.code = response.data;
+      //     this.time = time;
+      //   })
+      //   .catch(error => {
+      //     this.$Message.error(error.message);
+      //   });
     }
   },
   methods: {
@@ -123,17 +123,17 @@ export default {
       this.userType = name;
       this.formData.userid = "";
       this.formData.password = "";
-      this.formData.veficateCode = "";
-      var time = new Date().getTime();
-      this.axios
-        .get("/verification/code/" + time)
-        .then(response => {
-          this.code = response.data;
-          this.time = time;
-        })
-        .catch(error => {
-          this.$Message.error(error.message);
-        });
+      // this.formData.veficateCode = "";
+      // var time = new Date().getTime();
+      // this.axios
+      //   .get("/verification/code/" + time)
+      //   .then(response => {
+      //     this.code = response.data;
+      //     this.time = time;
+      //   })
+      //   .catch(error => {
+      //     this.$Message.error(error.message);
+      //   });
     },
     submit: function(name) {
       this.$refs[name].validate(valid => {
@@ -166,18 +166,18 @@ export default {
         }
       });
     },
-    changeImg: function() {
- var time = new Date().getTime();
-      this.axios
-        .get("/verification/code/" + time)
-        .then(response => {
-          this.code = response.data;
-          this.time = time;
-        })
-        .catch(error => {
-          this.$Message.error(error.message);
-        });
-    }
+//     changeImg: function() {
+//  var time = new Date().getTime();
+//       this.axios
+//         .get("/verification/code/" + time)
+//         .then(response => {
+//           this.code = response.data;
+//           this.time = time;
+//         })
+//         .catch(error => {
+//           this.$Message.error(error.message);
+//         });
+//     }
   }
 };
 </script>
