@@ -28,7 +28,7 @@ connector = Connector()
 connector.host = "localhost"
 connector.user = "root"
 connector.password = "jiebin22"
-connector.database = "curriculum_design"
+connector.database = "curriculum_design2"
 
 
 @app.route('/')
@@ -154,7 +154,7 @@ def teacher_data_verification(sheet, row):
             return ["error", "邮箱格式错误"]
     else:
         email = "无"
-    return [tid, name, position, rank, profession_info[0], phone, email]
+    return [tid, name, position, rank, profession_info["ProfID"], phone, email]
 
 
 @app.route('/teacher/upload', methods=['POST'])

@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface DepartmentMapper extends BaseMapper<Department> {
 
     //获取学院名称
-    @Select("select DeptName name from department where DeptID=#{deptid}")
-    Department getDepartmen(String deptid);
+    @Select("select DeptName name from department where DeptID=#{deptId}")
+    Department getDepartment(String deptId);
 }

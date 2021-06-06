@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TopicTypeMapper extends BaseMapper<TopicType> {
 
-    @Select("select * from topic_type where TypeID=#{typeid}")
-    TopicType getTopicType(String typeid);
+    @Select("select * from topic_type where TypeID=#{typeId}")
+    TopicType getTopicType(String typeId);
 }

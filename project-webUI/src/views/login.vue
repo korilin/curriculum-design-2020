@@ -45,9 +45,7 @@
       </Form>
     </Content>
     <Footer class="footer">
-      <span>学校：东莞理工学院城市学院</span>
-      <span>班级：2018级软件工程8班</span>
-      <span>小组：林洁彬、谢铭轩</span>
+      <span>GitHub Repository：<a href="https://github.com/korilin/curriculum-design-2020">https://github.com/korilin/curriculum-design-2020</a></span>
     </Footer>
   </div>
 </template>
